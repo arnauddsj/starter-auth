@@ -1,4 +1,4 @@
-function isAuth(req, res, next) {
+const isAuth = (req, res, next) => {
   if (!req.isAuthenticated()) {
     return res.status(401).json('Unauthorized resource')
   }
@@ -18,7 +18,7 @@ function isAuth(req, res, next) {
   next()
 }
 
-function isAdmin(req, res, next) {
+const isAdmin = (req, res, next) => {
   // Can change ADMIN to a boolean value if simplification needed
   if (!req.isAuthenticated() || req.user.userType !== 'ADMIN') {
     return res.status(401).json('Unauthorized resource')

@@ -1,7 +1,7 @@
 const sgMail = require('@sendgrid/mail')
 sgMail.setApiKey(process.env.SEND_GRID_USER_VALIDATION_API_KEY)
 
-async function emailRegistration(userEmail, token) {
+const emailRegistration = async (userEmail, token) => {
   const msg = {
     to: `${userEmail}`,
     from: `${process.env.EMAIL_FROM}`,
@@ -17,7 +17,7 @@ async function emailRegistration(userEmail, token) {
   }
 }
 
-async function emailRegistrationSuccess(userEmail) {
+const emailRegistrationSuccess = async (userEmail) => {
   const msg = {
     to: `${userEmail}`,
     from: `${process.env.EMAIL_FROM}`,
@@ -32,7 +32,7 @@ async function emailRegistrationSuccess(userEmail) {
   }
 }
 
-async function emailResetPasswordToken(userEmail, token) {
+const emailResetPasswordToken = async (userEmail, token) => {
   const msg = {
     to: `${userEmail}`,
     from: `${process.env.EMAIL_FROM}`,
@@ -48,7 +48,7 @@ async function emailResetPasswordToken(userEmail, token) {
   }
 }
 
-async function emailResetPasswordSuccess(userEmail) {
+const emailResetPasswordSuccess = async (userEmail) => {
   const msg = {
     to: `${userEmail}`,
     from: `${process.env.EMAIL_FROM}`,

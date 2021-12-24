@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 
 const secret = process.env.JWT_EMAIL_SECRET
 
-async function genIdentityToken(email, activationLink) {
+const genIdentityToken = async (email, activationLink) => {
   try {
     const token = await jwt.sign(
       {
@@ -19,7 +19,7 @@ async function genIdentityToken(email, activationLink) {
   }
 }
 
-async function verifyIdentityToken(token) {
+const verifyIdentityToken = async (token) => {
   try {
     const isValid = await jwt.verify(token, secret, function (error, decoded) {
       if (error) {
