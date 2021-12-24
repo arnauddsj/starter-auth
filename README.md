@@ -66,11 +66,11 @@ Api url is the link to your express api.
 A lot need to be improved and fine tuned. CSS is quite ugly, but this actual version is already a good step to start a project without having to spend a week on authentication.
 
 Future improvements:  
-1 - Add Yup validations on the server side as well (important).  
-2 - Google, twitter, github passport strategies.  
-3 - Add a simple admin interface for managing users (there is already an admin check logic but not used yet).  
-4 - Add simple user profile to let user changes their infos.  
-5 - Add simple stripe logic for subscriptions.  
+1 [x] Add Yup validations on the server side as well (important). -> Done as a middleware
+2 [ ] Google, twitter, github passport strategies.  
+3 [ ] Add a simple admin interface for managing users (there is already an admin check logic but not used yet).  
+4 [ ] Add simple user profile to let user changes their infos.  
+5 [ ] Add simple stripe logic for subscriptions.  
 
 And maybe make it look a bit better on the way.
 
