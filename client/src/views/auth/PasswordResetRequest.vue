@@ -8,7 +8,7 @@
         v-model="inputs.email"
         type="email"
         @blur="validate('email', inputs)"
-        @focus="resetError('email')"
+        @focus="resetValidationError('email')"
       />
       <div v-if="stateValidation.email" class="validation-error">
         {{ stateValidation.email }}
@@ -27,7 +27,11 @@
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { validate, storeValidation, resetError } from '../../store/validations'
+import {
+  validate,
+  storeValidation,
+  resetValidationError,
+} from '../../store/validations'
 const { stateValidation } = storeValidation()
 import api from '../../services/apiClient'
 

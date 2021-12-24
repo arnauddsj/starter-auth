@@ -4,6 +4,10 @@ import { isAuth, setUser, routeAuthCheck, storeUser } from '../store/user'
 const { stateUser } = storeUser()
 
 import { storeError, resetError } from '../store/errorHandler'
+import {
+  hasValidationError,
+  resetAllValidationErrors,
+} from '../store/validations'
 const { stateError } = storeError()
 
 import main from '../views/Main.vue'
@@ -111,13 +115,14 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  // if (stateError.error) {
-  //   resetError()
-  //   next()
-  // } else {
-  //   next()
-  // }
-  next()
+  // Reset Errors on navigation
+  if (stateError.error || hasValidationError.value) {
+    resetError()
+    resetAllValidationErrors()
+    next()
+  } else {
+    next()
+  }
 })
 
 router.beforeEach(async (to, from, next) => {

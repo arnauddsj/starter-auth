@@ -1,4 +1,4 @@
-import { readonly, reactive } from 'vue'
+import { readonly, reactive, computed } from 'vue'
 import { setError } from '../store/errorHandler'
 import * as yup from 'yup'
 import YupPassword from 'yup-password'
@@ -42,15 +42,20 @@ const RESET_VALIDATION_ERROR = (input) => {
   stateValidation[input] = ''
 }
 
-const RESET_ALL_VALIDATION_ERROR = () => {
+const RESET_ALL_VALIDATION_ERRORS = () => {
   stateValidation.email = ''
   stateValidation.password = ''
+  stateValidation.passwordConfirmation = ''
 }
 
 // ACTIONS
 
-const resetError = (input) => {
+const resetValidationError = (input) => {
   RESET_VALIDATION_ERROR(input)
+}
+
+const resetAllValidationErrors = () => {
+  RESET_ALL_VALIDATION_ERRORS()
 }
 
 const validate = async (input, value) => {
@@ -91,7 +96,7 @@ const SET_VALIDATION_ERRORS = (errors) => {
 const validateAll = async (inputs) => {
   try {
     await schema.validate(inputs, { abortEarly: true })
-    RESET_ALL_VALIDATION_ERROR()
+    RESET_ALL_VALIDATION_ERRORS()
   } catch (error) {
     console.log('Form validation error: ', { error })
     if (error.errors.length > 0) {
@@ -103,4 +108,21 @@ const validateAll = async (inputs) => {
   }
 }
 
-export { storeValidation, validate, validateAll, resetError }
+const hasValidationError = computed(() => {
+  let isEmpty = (o) =>
+    o.constructor.name === 'Object'
+      ? Object.keys(o).reduce((y, z) => y && isEmpty(o[z]), true)
+      : o.length == 0
+
+  const o = { ...stateValidation }
+  return !isEmpty(o)
+})
+
+export {
+  storeValidation,
+  validate,
+  validateAll,
+  resetValidationError,
+  resetAllValidationErrors,
+  hasValidationError,
+}

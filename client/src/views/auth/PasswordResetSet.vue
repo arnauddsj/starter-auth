@@ -8,7 +8,7 @@
         name="password"
         v-model="inputs.password"
         @blur="validate('password', inputs)"
-        @focus="resetError('password')"
+        @focus="resetValidationError('password')"
       />
       <div v-if="stateValidation.password" class="validation-error">
         {{ stateValidation.password }}
@@ -19,7 +19,7 @@
         name="passwordConfirmation"
         v-model="inputs.passwordConfirmation"
         @blur="validate('passwordConfirmation', inputs)"
-        @focus="resetError('passwordConfirmation')"
+        @focus="resetValidationError('passwordConfirmation')"
       />
       <div v-if="stateValidation.passwordConfirmation" class="validation-error">
         {{ stateValidation.passwordConfirmation }}
@@ -40,7 +40,11 @@
 */
 import { reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { validate, storeValidation, resetError } from '../../store/validations'
+import {
+  validate,
+  storeValidation,
+  resetValidationError,
+} from '../../store/validations'
 const { stateValidation } = storeValidation()
 import api from '../../services/apiClient'
 

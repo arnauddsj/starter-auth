@@ -8,7 +8,7 @@
         name="email"
         v-model="inputs.email"
         @blur="validate('email', inputs)"
-        @focus="resetError('email')"
+        @focus="resetValidationError('email')"
       />
       <div v-if="stateValidation.email" class="validation-error">
         {{ stateValidation.email }}
@@ -19,7 +19,7 @@
         name="password"
         v-model="inputs.password"
         @blur="validate('password', inputs)"
-        @focus="resetError('password')"
+        @focus="resetValidationError('password')"
       />
       <div v-if="stateValidation.password" class="validation-error">
         {{ stateValidation.password }}
@@ -47,7 +47,7 @@ import {
   validate,
   validateAll,
   storeValidation,
-  resetError,
+  resetValidationError,
 } from '../../store/validations'
 const { stateValidation } = storeValidation()
 
