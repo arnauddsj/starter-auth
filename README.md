@@ -1,7 +1,7 @@
 # Starter Auth 
 
 This starter pack help me to quickly bootstrap any SaaS project with an already made auth architecture, made with the following stack express, prisma, passport, vue3.  
-It is devided in 2 folders, server for the api, and client for the front-end.
+It is divided in 2 folders, server for the api, and client for the front-end.
 
 ## Server 
 
@@ -23,13 +23,13 @@ Make sure you create a .env at the folder root server/.env with the following in
 
 ```bash
 PORT=4000
-DATABASE_URL="postgresql://username:admin@localhost:5432/dbname?schema=public"
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
 CLIENT_URL="http://localhost:3000"
 
 SESSION_SECRET="strong secret 1"
 JWT_EMAIL_SECRET="strong secret 2"
 
-SEND_GRID_USER_VALIDATION_API_KEY="SG. xxxxxxxxxxx"
+SEND_GRID_USER_VALIDATION_API_KEY="SG.xxxxxxxxxxx"
 EMAIL_FROM="no-reply@yourdomain.com"
 ```
 
