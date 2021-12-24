@@ -18,15 +18,18 @@ const {
 } = require('../lib/emails')
 
 const { genIdentityToken, verifyIdentityToken } = require('../lib/tokenUtils')
+const {
+  validateCredentials,
+  validate,
+} = require('../middleware/validations.js')
 
 // [ ] DRY, Can improve code by writing a function to remove validationToken on errors
 
 // Register new user
-router.post('/auth/register', async (req, res, next) => {
+router.post('/auth/register', validateCredentials, async (req, res, next) => {
   // Those need to match with the customFields setup in config/passport.js
-  let { email, password } = req.body
-
-  const saltHash = genPassword(password)
+  const { email, password } = req.body
+  const saltHash = await genPassword(password)
 
   const salt = saltHash.salt
   const hash = saltHash.hash
@@ -162,62 +165,66 @@ router.post('/auth/verify-email', async (req, res, next) => {
 })
 
 // Resend a validation email
-router.post('/auth/gen-email-validation', async (req, res, next) => {
-  const { email } = req.body
+router.post(
+  '/auth/gen-email-validation',
+  validate('email'),
+  async (req, res, next) => {
+    const { email } = req.body
 
-  try {
-    const isUserPending = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-      select: {
-        activation: true,
-      },
-    })
+    try {
+      const isUserPending = await prisma.user.findUnique({
+        where: {
+          email,
+        },
+        select: {
+          activation: true,
+        },
+      })
 
-    if (isUserPending.activation === 'VALIDATED') {
-      let error = new Error('Email already validated')
-      error.statusCode = 401
-      throw error
+      if (isUserPending.activation === 'VALIDATED') {
+        let error = new Error('Email already validated')
+        error.statusCode = 401
+        throw error
+      }
+
+      if (isUserPending.activation === 'REVOKED') {
+        let error = new Error(
+          'This account is deactivated, please contact support.'
+        )
+        error.statusCode = 401
+        throw error
+      }
+
+      const emailVerificationLink = crypto.randomBytes(32).toString('hex')
+
+      const genToken = await genIdentityToken(email, emailVerificationLink)
+
+      await prisma.user.update({
+        where: {
+          email,
+        },
+        data: {
+          emailVerificationLink,
+        },
+      })
+
+      await prisma.validationToken.create({
+        data: {
+          userEmail: email,
+          token: genToken,
+        },
+      })
+
+      await emailRegistration(email, genToken)
+
+      res.send()
+    } catch (error) {
+      next(error)
     }
-
-    if (isUserPending.activation === 'REVOKED') {
-      let error = new Error(
-        'This account is deactivated, please contact support.'
-      )
-      error.statusCode = 401
-      throw error
-    }
-
-    const emailVerificationLink = crypto.randomBytes(32).toString('hex')
-
-    const genToken = await genIdentityToken(email, emailVerificationLink)
-
-    await prisma.user.update({
-      where: {
-        email,
-      },
-      data: {
-        emailVerificationLink,
-      },
-    })
-
-    await prisma.validationToken.create({
-      data: {
-        userEmail: email,
-        token: genToken,
-      },
-    })
-
-    await emailRegistration(email, genToken)
-
-    res.send()
-  } catch (error) {
-    next(error)
   }
-})
+)
 
-router.post('/auth/login', async (req, res, next) => {
+router.post('/auth/login', validateCredentials, async (req, res, next) => {
   try {
     await passport.authenticate('local', (error, user) => {
       if (error) return next(error)
@@ -246,129 +253,137 @@ router.post('/auth/login', async (req, res, next) => {
   }
 })
 
-router.post('/auth/password-reset', async (req, res, next) => {
-  const { email } = req.body
+router.post(
+  '/auth/password-reset',
+  validate('email'),
+  async (req, res, next) => {
+    const { email } = req.body
 
-  try {
-    const emailVerificationLink = crypto.randomBytes(32).toString('hex')
+    try {
+      const emailVerificationLink = crypto.randomBytes(32).toString('hex')
 
-    const genToken = await genIdentityToken(email, emailVerificationLink)
+      const genToken = await genIdentityToken(email, emailVerificationLink)
 
-    await prisma.user.update({
-      where: {
-        email,
-      },
-      data: {
-        emailVerificationLink,
-      },
-    })
-
-    await prisma.validationToken.create({
-      data: {
-        userEmail: email,
-        token: genToken,
-      },
-    })
-
-    await emailResetPasswordToken(email, genToken)
-
-    res.send()
-  } catch (error) {
-    next(error)
-  }
-})
-
-router.post('/auth/password-reset-set', async (req, res, next) => {
-  const { token, password } = req.body
-
-  try {
-    // find token in db
-    const getStoredToken = await prisma.validationToken.findFirst({
-      where: {
-        token: token,
-      },
-    })
-
-    if (!getStoredToken) {
-      let error = new Error('Token not found, please try again.')
-      error.statusCode = 404
-      throw error
-    }
-
-    const isTokenValid = await verifyIdentityToken(token)
-
-    if (!isTokenValid) {
-      // delete all validation token from decoded.userId in database
-      await prisma.validationToken.deleteMany({
+      await prisma.user.update({
         where: {
-          userEmail: getStoredToken.userEmail,
+          email,
+        },
+        data: {
+          emailVerificationLink,
         },
       })
 
-      let error = new Error('Token not valid, please try again.')
-      error.statusCode = 401
-      throw error
-    }
-
-    const user = await prisma.user.findUnique({
-      where: {
-        email: getStoredToken.userEmail,
-      },
-      select: {
-        email: true,
-        emailVerificationLink: true,
-      },
-    })
-
-    if (!user) {
-      let error = new Error('Unauthorized user')
-      error.statusCode = 401
-      throw error
-    }
-
-    if (isTokenValid.activationLink !== user.emailVerificationLink) {
-      await prisma.validationToken.deleteMany({
-        where: {
-          userEmail: getStoredToken.userEmail,
+      await prisma.validationToken.create({
+        data: {
+          userEmail: email,
+          token: genToken,
         },
       })
 
-      let error = new Error('Wrong activationLink')
-      error.statusCode = 401
-      throw error
+      await emailResetPasswordToken(email, genToken)
+
+      res.send()
+    } catch (error) {
+      next(error)
     }
-
-    // Hash new password
-    const saltHash = genPassword(password)
-
-    const salt = saltHash.salt
-    const hash = saltHash.hash
-
-    await prisma.user.update({
-      where: {
-        email: getStoredToken.userEmail,
-      },
-      data: {
-        hash,
-        salt,
-        activation: 'VALIDATED',
-        emailVerificationLink: '',
-      },
-    })
-
-    await prisma.validationToken.deleteMany({
-      where: {
-        userEmail: user.email,
-      },
-    })
-
-    await emailResetPasswordSuccess(user.email)
-
-    res.send()
-  } catch (error) {
-    next(error)
   }
-})
+)
+
+router.post(
+  '/auth/password-reset-set',
+  validate('password'),
+  async (req, res, next) => {
+    const { token, password } = req.body
+
+    try {
+      // find token in db
+      const getStoredToken = await prisma.validationToken.findFirst({
+        where: {
+          token: token,
+        },
+      })
+
+      if (!getStoredToken) {
+        let error = new Error('Token not found, please try again.')
+        error.statusCode = 404
+        throw error
+      }
+
+      const isTokenValid = await verifyIdentityToken(token)
+
+      if (!isTokenValid) {
+        // delete all validation token from decoded.userId in database
+        await prisma.validationToken.deleteMany({
+          where: {
+            userEmail: getStoredToken.userEmail,
+          },
+        })
+
+        let error = new Error('Token not valid, please try again.')
+        error.statusCode = 401
+        throw error
+      }
+
+      const user = await prisma.user.findUnique({
+        where: {
+          email: getStoredToken.userEmail,
+        },
+        select: {
+          email: true,
+          emailVerificationLink: true,
+        },
+      })
+
+      if (!user) {
+        let error = new Error('Unauthorized user')
+        error.statusCode = 401
+        throw error
+      }
+
+      if (isTokenValid.activationLink !== user.emailVerificationLink) {
+        await prisma.validationToken.deleteMany({
+          where: {
+            userEmail: getStoredToken.userEmail,
+          },
+        })
+
+        let error = new Error('Wrong activationLink')
+        error.statusCode = 401
+        throw error
+      }
+
+      // Hash new password
+      const saltHash = genPassword(password)
+
+      const salt = saltHash.salt
+      const hash = saltHash.hash
+
+      await prisma.user.update({
+        where: {
+          email: getStoredToken.userEmail,
+        },
+        data: {
+          hash,
+          salt,
+          activation: 'VALIDATED',
+          emailVerificationLink: '',
+        },
+      })
+
+      await prisma.validationToken.deleteMany({
+        where: {
+          userEmail: user.email,
+        },
+      })
+
+      await emailResetPasswordSuccess(user.email)
+
+      res.send()
+    } catch (error) {
+      next(error)
+    }
+  }
+)
 
 router.get('/auth/logout', (req, res, next) => {
   // logout with passport
