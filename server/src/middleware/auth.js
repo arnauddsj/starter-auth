@@ -9,7 +9,7 @@ const isAuth = (req, res, next) => {
   }
 
   // Remove this if no need validation process
-  if (req.user?.activation !== 'REVOKED') {
+  if (req.user?.activation === 'REVOKED') {
     return res
       .status(401)
       .json('Your account is deactivated, please contact support.')
