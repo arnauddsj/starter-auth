@@ -4,3 +4,4 @@ dist
 dist-ssr
 *.local
 .env
+starter-auth.code-workspace
