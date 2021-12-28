@@ -48,8 +48,8 @@
   From there user check mail or resend a validation email (this will un-valid the previous one)
   The user email is stored to store/user, it can be used on to resend email.
   */
-import { reactive, ref } from 'vue'
-import { register } from '../../store/user'
+import { reactive, ref, watch } from 'vue'
+import { register, isAuth } from '../../store/user'
 import { useRouter } from 'vue-router'
 
 import {
@@ -86,6 +86,13 @@ const submit = async () => {
     console.log(error)
   }
 }
+
+watch(() => {
+  // If user is logged-in force redirection to account
+  if (isAuth.value) {
+    router.push({ name: 'account' })
+  }
+})
 </script>
 
 <style lang="scss" scoped>

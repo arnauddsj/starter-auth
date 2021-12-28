@@ -51,9 +51,9 @@ const useLogin = async (credentials) => {
   return res
 }
 
-const initialAuthCheck = async () => {
+const authCheck = async () => {
   setLoading()
-  const res = await api.initialAuthCheck()
+  const res = await api.authCheck()
 
   // Not logged in or revoked, do not set user data and auth
   if (res.data.activation === 'REVOKED' || res.data === '') {
@@ -61,23 +61,17 @@ const initialAuthCheck = async () => {
     return
   }
 
-  resetLoading()
   SET_USER_DATA(res.data)
   SET_USER_AUTH()
-  return
-}
-
-const routeAuthCheck = async () => {
-  setLoading()
-  const res = await api.routeAuthCheck()
   resetLoading()
-  return res
+  return
 }
 
 const useLogout = async () => {
   setLoading()
   await api.logout()
   RESET_USER()
+  resetLoading()
 }
 
 const setUser = (data) => {
@@ -89,13 +83,4 @@ const isAuth = computed(() => {
   return stateUser.isAuth
 })
 
-export {
-  storeUser,
-  initialAuthCheck,
-  routeAuthCheck,
-  setUser,
-  useLogin,
-  useLogout,
-  register,
-  isAuth,
-}
+export { storeUser, authCheck, setUser, useLogin, useLogout, register, isAuth }

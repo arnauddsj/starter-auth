@@ -47,7 +47,7 @@ export default {
   async login(credentials) {
     try {
       await apiClient.post('/auth/login', credentials)
-      const res = await apiClient.get('/auth/route-auth-check')
+      const res = await apiClient.get('/auth/auth-check')
       return res
     } catch (error) {
       setError(error)
@@ -81,18 +81,9 @@ export default {
     }
   },
   // When vue app load first check if user is connect, should not throw error
-  async initialAuthCheck() {
+  async authCheck() {
     try {
-      const res = await apiClient.get('/auth/initial-auth-check')
-      return res
-    } catch (error) {
-      setError(error)
-    }
-  },
-  // Before visiting requiredAuth routes
-  async routeAuthCheck() {
-    try {
-      const res = await apiClient.get('/auth/route-auth-check')
+      const res = await apiClient.get('/auth/auth-check')
       return res
     } catch (error) {
       setError(error)

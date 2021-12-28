@@ -10,15 +10,21 @@
 </template>
 
 <script setup>
-import { onErrorCaptured } from 'vue'
+import { onErrorCaptured, onBeforeMount } from 'vue'
 import { storeLoading } from './store/loadingHandler'
 import { setError } from './store/errorHandler'
+import { authCheck } from './store/user'
 
 const { stateLoading } = storeLoading()
 
 onErrorCaptured((e) => {
   setError(e)
   return true
+})
+
+onBeforeMount(async () => {
+  // Check if user is logged-in
+  await authCheck()
 })
 </script>
 

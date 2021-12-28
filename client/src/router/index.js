@@ -1,16 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import {
-  isAuth,
-  setUser,
-  routeAuthCheck,
-  storeUser,
-  initialAuthCheck,
-} from '../store/user'
+import { isAuth, setUser, authCheck, storeUser } from '../store/user'
 
 const { stateUser } = storeUser()
 
 import { storeError, resetError } from '../store/errorHandler'
-import { setLoading, resetLoading } from '../store/loadingHandler'
 
 import {
   hasValidationError,
@@ -65,25 +58,11 @@ const routes = [
         path: '',
         component: login,
         name: 'login',
-        beforeEnter: async (to, from, next) => {
-          await initialAuthCheck()
-          if (isAuth.value) {
-            next({ name: 'account' })
-          }
-          next()
-        },
       },
       {
         path: '/register',
         component: register,
         name: 'register',
-        beforeEnter: async (to, from, next) => {
-          await initialAuthCheck()
-          if (isAuth.value) {
-            next({ name: 'account' })
-          }
-          next()
-        },
       },
       {
         path: '/registration-success',
@@ -136,7 +115,6 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  setLoading()
   // Reset Errors on navigation
   if (stateError.error || hasValidationError.value) {
     resetError()
@@ -149,7 +127,7 @@ router.beforeEach(async (to, from, next) => {
     if (!isAuth.value) {
       // 3. If not Auth, check if there is a cookie and validate it
       try {
-        const res = await routeAuthCheck()
+        const res = await authCheck()
         // 5. If cookie is validated, store user data in store
 
         if (res.data.activation === 'PENDING') {
@@ -179,10 +157,6 @@ router.beforeEach(async (to, from, next) => {
     // Page don't need auth
     next()
   }
-})
-
-router.afterEach(() => {
-  resetLoading()
 })
 
 export default router

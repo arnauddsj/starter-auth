@@ -12,8 +12,8 @@
 /*
   Layout that shows all pages related to login, registration, validation etc.
 */
-import { storeError } from '../../store/errorHandler'
 import Logo from '../../components/Logo.vue'
+import { storeError } from '../../store/errorHandler'
 const { stateError } = storeError()
 </script>
 

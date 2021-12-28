@@ -39,8 +39,8 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
-import { useLogin } from '../../store/user'
+import { reactive, watch } from 'vue'
+import { useLogin, isAuth } from '../../store/user'
 import { useRouter } from 'vue-router'
 
 import {
@@ -76,6 +76,13 @@ const submit = async () => {
     console.log(error)
   }
 }
+
+watch(() => {
+  // If user is logged-in force redirection to account
+  if (isAuth.value) {
+    router.push({ name: 'account' })
+  }
+})
 </script>
 
 <style lang="scss" scoped>

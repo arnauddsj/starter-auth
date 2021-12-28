@@ -386,7 +386,7 @@ router.get('/auth/logout', (req, res, next) => {
   res.send()
 })
 
-router.get('/auth/initial-auth-check', (req, res, next) => {
+router.get('/auth/auth-check', (req, res, next) => {
   //Created a separate route without middleware to not throw errors on app load
   if (!req.isAuthenticated() && req.user?.activation !== 'VALIDATED') {
     res.send()
@@ -398,15 +398,6 @@ router.get('/auth/initial-auth-check', (req, res, next) => {
     }
     res.send(user)
   }
-})
-
-router.get('/auth/route-auth-check', isAuth, (req, res, next) => {
-  // Add here more data you want to receive from server/db
-  const user = {
-    email: req.user.email,
-    activation: req.user.activation,
-  }
-  res.send(user)
 })
 
 // router.get('/auth/check-admin', isAdmin, (req, res, next) => {
