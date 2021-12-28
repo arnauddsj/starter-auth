@@ -14,6 +14,7 @@ const { stateError } = storeError()
 import main from '../views/Main.vue'
 import home from '../views/Home.vue'
 import account from '../views/user/Account.vue'
+import pageNotFound from '../views/404.vue'
 
 import auth from '../views/auth/Auth.vue'
 import login from '../views/auth/Login.vue'
@@ -106,6 +107,10 @@ const routes = [
         name: 'password-reset-success',
       },
     ],
+  },
+  {
+    path: '/:pathMatch(.*)',
+    component: pageNotFound,
   },
 ]
 
