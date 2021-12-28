@@ -240,12 +240,7 @@ router.post('/auth/login', validateCredentials, async (req, res, next) => {
           return next(error)
         }
 
-        const userObject = {
-          activation: user.activation,
-          email: user.email,
-        }
-
-        return res.send(userObject)
+        return res.send()
       })
     })(req, res, next)
   } catch (error) {
