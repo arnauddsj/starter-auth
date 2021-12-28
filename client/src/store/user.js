@@ -68,7 +68,9 @@ const initialAuthCheck = async () => {
 }
 
 const routeAuthCheck = async () => {
+  setLoading()
   const res = await api.routeAuthCheck()
+  resetLoading()
   return res
 }
 
