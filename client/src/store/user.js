@@ -60,6 +60,7 @@ const initialAuthCheck = async () => {
 
 const routeAuthCheck = async () => {
   const res = await api.routeAuthCheck()
+  console.log('coucou', { res })
   return res
 }
 
@@ -69,7 +70,7 @@ const useLogout = async () => {
 }
 
 const setUser = (data) => {
-  SET_USER(data)
+  SET_USER_DATA(data)
 }
 
 // GETTERS

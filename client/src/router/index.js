@@ -133,7 +133,6 @@ router.beforeEach(async (to, from, next) => {
       // 3. If not Auth, check if there is a cookie and validate it
       try {
         const res = await routeAuthCheck()
-
         // 5. If cookie is validated, store user data in store
 
         if (res.data.activation === 'PENDING') {
