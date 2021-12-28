@@ -2,20 +2,19 @@
   <div class="auth-container">
     <Logo class="logo" />
     <router-view class="auth-wrapper"></router-view>
-    <div class="error-container" v-if="errors.error">
-      {{ errors.message }}
+    <div class="error-container" v-if="stateError.error">
+      {{ stateError.message }}
     </div>
   </div>
 </template>
 
 <script setup>
-/* 
+/*
   Layout that shows all pages related to login, registration, validation etc.
 */
-import { inject } from 'vue'
+import { storeError } from '../../store/errorHandler'
 import Logo from '../../components/Logo.vue'
-
-const errors = inject('stateError')
+const { stateError } = storeError()
 </script>
 
 <style lang="scss" scoped>

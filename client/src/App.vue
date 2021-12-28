@@ -1,28 +1,19 @@
 <template>
-  <div class="app-container">
-    <router-view></router-view>
-  </div>
+  <div v-if="stateLoading?.loading">loading</div>
+  <router-view v-else></router-view>
 </template>
 
 <script setup>
-import { onErrorCaptured, provide, onMounted } from 'vue'
-import { storeUser, initialAuthCheck, setUser } from './store/user'
-import { storeError, setError } from './store/errorHandler'
-const { stateError } = storeError()
+import { onErrorCaptured } from 'vue'
+import { storeLoading } from './store/loadingHandler'
+import { setError } from './store/errorHandler'
 
-const { stateUser } = storeUser()
+const { stateLoading } = storeLoading()
 
 onErrorCaptured((e) => {
   setError(e)
   return true
 })
-
-onMounted(async () => {
-  // Check if user is loggedin
-  await initialAuthCheck()
-})
-
-provide('stateError', stateError)
 </script>
 
 <style lang="scss">

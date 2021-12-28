@@ -1,9 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { isAuth, setUser, routeAuthCheck, storeUser } from '../store/user'
+import {
+  isAuth,
+  setUser,
+  routeAuthCheck,
+  storeUser,
+  initialAuthCheck,
+} from '../store/user'
 
 const { stateUser } = storeUser()
 
 import { storeError, resetError } from '../store/errorHandler'
+import { setLoading, resetLoading } from '../store/loadingHandler'
+
 import {
   hasValidationError,
   resetAllValidationErrors,
@@ -33,7 +41,7 @@ const routes = [
     name: 'main',
     children: [
       {
-        path: '/',
+        path: '',
         component: home,
         name: 'home',
       },
@@ -57,18 +65,25 @@ const routes = [
         path: '',
         component: login,
         name: 'login',
-        // beforeEnter: (to, from, next) => {
-        //   if (isAuth.value) {
-        //     console.log(isAuth.value)
-        //     next({ name: 'account' })
-        //   }
-        // },
-        // Add route guard, is user is logged in redirect to account
+        beforeEnter: async (to, from, next) => {
+          await initialAuthCheck()
+          if (isAuth.value) {
+            next({ name: 'account' })
+          }
+          next()
+        },
       },
       {
         path: '/register',
         component: register,
         name: 'register',
+        beforeEnter: async (to, from, next) => {
+          await initialAuthCheck()
+          if (isAuth.value) {
+            next({ name: 'account' })
+          }
+          next()
+        },
       },
       {
         path: '/registration-success',
@@ -120,18 +135,14 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
+  setLoading()
   // Reset Errors on navigation
   if (stateError.error || hasValidationError.value) {
     resetError()
     resetAllValidationErrors()
-    next()
-  } else {
-    next()
   }
-})
 
-router.beforeEach(async (to, from, next) => {
   // 1. Check if route need auth, if not next()
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     // 2. If authRequired, check in store if user isAuth
@@ -168,6 +179,10 @@ router.beforeEach(async (to, from, next) => {
     // Page don't need auth
     next()
   }
+})
+
+router.afterEach(() => {
+  resetLoading()
 })
 
 export default router
