@@ -57,6 +57,12 @@ const routes = [
         path: '',
         component: login,
         name: 'login',
+        // beforeEnter: (to, from, next) => {
+        //   if (isAuth.value) {
+        //     console.log(isAuth.value)
+        //     next({ name: 'account' })
+        //   }
+        // },
         // Add route guard, is user is logged in redirect to account
       },
       {

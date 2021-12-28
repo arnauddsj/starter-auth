@@ -391,6 +391,7 @@ router.get('/auth/initial-auth-check', (req, res, next) => {
   if (!req.isAuthenticated() && req.user?.activation !== 'VALIDATED') {
     res.send()
   } else {
+    // Add here more data you want to receive from server/db
     const user = {
       email: req.user.email,
       activation: req.user.activation,
@@ -400,6 +401,7 @@ router.get('/auth/initial-auth-check', (req, res, next) => {
 })
 
 router.get('/auth/route-auth-check', isAuth, (req, res, next) => {
+  // Add here more data you want to receive from server/db
   const user = {
     email: req.user.email,
     activation: req.user.activation,

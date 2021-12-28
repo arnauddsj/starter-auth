@@ -52,10 +52,13 @@ const useLogin = async (credentials) => {
 
 const initialAuthCheck = async () => {
   const res = await api.initialAuthCheck()
+  console.log('my res', res)
 
-  if (res.data.activation === 'REVOKED') {
+  // Not logged in or revoked, do not set user data and auth
+  if (res.data.activation === 'REVOKED' || res.data === '') {
     return
   }
+
   SET_USER_DATA(res.data)
   SET_USER_AUTH()
   return
