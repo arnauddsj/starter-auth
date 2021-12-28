@@ -25,6 +25,7 @@ const customFields = {
 
 const verifyCallback = async (req, email, password, done) => {
   // Verify user against db with prisma
+  // Returned data from this callback is only for check password and serializeUser. Don't return other data.
   prisma.user
     .findUnique({
       where: {
@@ -46,6 +47,8 @@ const verifyCallback = async (req, email, password, done) => {
 
       if (!isValid) done(null, false)
 
+      delete user.hash
+      delete user.salt
       return done(null, user)
     })
     .catch((error) => {
@@ -71,16 +74,17 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((userId, done) => {
   // Used to retrieve user data from session.
 
+  // Add to 'select' any data you would like to catch from DB when user login
   prisma.user
     .findUnique({
       where: {
         id: userId,
       },
       select: {
-        id: true,
         email: true,
         activation: true,
         userType: true,
+        // otherData: 'My other data',
       },
     })
     .then((user) => {

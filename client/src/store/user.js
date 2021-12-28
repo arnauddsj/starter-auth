@@ -5,6 +5,7 @@ const stateUser = reactive({
   isAuth: false,
   email: '',
   activation: '',
+  userType: '',
 })
 
 function storeUser() {
@@ -17,6 +18,7 @@ function storeUser() {
 const SET_USER_DATA = (data) => {
   stateUser.email = data.email
   stateUser.activation = data.activation
+  stateUser.userType = data.userType
 }
 
 const SET_USER_AUTH = () => {
@@ -27,6 +29,7 @@ const RESET_USER = () => {
   stateUser.isAuth = false
   stateUser.email = ''
   stateUser.activation = ''
+  stateUser.userType = ''
 }
 
 // ACTIONS
@@ -60,7 +63,6 @@ const initialAuthCheck = async () => {
 
 const routeAuthCheck = async () => {
   const res = await api.routeAuthCheck()
-  console.log('coucou', { res })
   return res
 }
 
@@ -74,7 +76,6 @@ const setUser = (data) => {
 }
 
 // GETTERS
-
 const isAuth = computed(() => {
   return stateUser.isAuth
 })

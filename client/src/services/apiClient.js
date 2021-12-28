@@ -46,7 +46,8 @@ export default {
   },
   async login(credentials) {
     try {
-      const res = await apiClient.post('/auth/login', credentials)
+      await apiClient.post('/auth/login', credentials)
+      const res = await apiClient.get('/auth/route-auth-check')
       return res
     } catch (error) {
       setError(error)
