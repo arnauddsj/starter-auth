@@ -23,7 +23,7 @@ const sendEmailDisabled = ref(false)
 const enableButton = () => {
   setTimeout(function () {
     sendEmailDisabled.value = false
-  }, 30000)
+  }, 20000)
 }
 
 const validateEmail = () => {

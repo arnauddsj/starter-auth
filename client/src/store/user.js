@@ -33,6 +33,10 @@ const RESET_USER = () => {
   stateUser.userType = ''
 }
 
+// used when register to keep email in stored if need resend validation email
+const SET_EMAIL = (email) => {
+  stateUser.email = email
+}
 // ACTIONS
 const register = async (credentials) => {
   const res = await api.register(credentials)
@@ -46,6 +50,7 @@ const useLogin = async (credentials) => {
   if (res.data.activation === 'REVOKED') {
     return res
   }
+
   SET_USER_DATA(res.data)
   SET_USER_AUTH()
   return res
