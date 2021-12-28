@@ -73,6 +73,7 @@ const routeAuthCheck = async () => {
 }
 
 const useLogout = async () => {
+  setLoading()
   await api.logout()
   RESET_USER()
 }
