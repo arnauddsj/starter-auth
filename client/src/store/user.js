@@ -1,5 +1,5 @@
 import { readonly, reactive, computed } from 'vue'
-import { setLoading, resetLoading, storeLoading } from './loadingHandler'
+import { setLoading, resetLoading } from './loadingHandler'
 import api from '../services/apiClient'
 
 const stateUser = reactive({
