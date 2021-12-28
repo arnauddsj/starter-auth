@@ -6,7 +6,7 @@
 </template>
 <script setup>
 import { onMounted, ref } from 'vue'
-import { storeUser } from '../store/user'
+import { storeUser } from '../../store/user'
 
 const { stateUser } = storeUser()
 </script>

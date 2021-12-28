@@ -11,13 +11,11 @@
 <script setup>
 import { onMounted } from 'vue'
 import { storeUser, initialAuthCheck } from '../store/user'
-import { setLoading, resetLoading, storeLoading } from '../store/loadingHandler'
 import { storeError } from '../store/errorHandler'
 import Nav from '../components/Nav.vue'
 
 const { stateError } = storeError()
 const { stateUser } = storeUser()
-const { stateLoading } = storeLoading()
 
 onMounted(async () => {
   // Check if user is loggedin

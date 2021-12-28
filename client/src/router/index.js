@@ -20,7 +20,7 @@ const { stateError } = storeError()
 
 import main from '../views/Main.vue'
 import home from '../views/Home.vue'
-import account from '../views/Account.vue'
+import account from '../views/user/Account.vue'
 
 import auth from '../views/auth/Auth.vue'
 import login from '../views/auth/Login.vue'

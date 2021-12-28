@@ -11,7 +11,7 @@
       <li v-else>
         <button @click="logout" class="logout">Logout</button>
       </li>
-      <li class="register">
+      <li class="register" v-if="!isAuth">
         <router-link :to="{ name: 'register' }"
           ><button>Get Started</button></router-link
         >

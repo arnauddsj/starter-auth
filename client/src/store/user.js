@@ -1,4 +1,5 @@
 import { readonly, reactive, computed } from 'vue'
+import { setLoading, resetLoading, storeLoading } from './loadingHandler'
 import api from '../services/apiClient'
 
 const stateUser = reactive({
@@ -51,13 +52,16 @@ const useLogin = async (credentials) => {
 }
 
 const initialAuthCheck = async () => {
+  setLoading()
   const res = await api.initialAuthCheck()
 
   // Not logged in or revoked, do not set user data and auth
   if (res.data.activation === 'REVOKED' || res.data === '') {
+    resetLoading()
     return
   }
 
+  resetLoading()
   SET_USER_DATA(res.data)
   SET_USER_AUTH()
   return

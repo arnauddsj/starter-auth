@@ -1,6 +1,12 @@
 <template>
-  <div v-if="stateLoading?.loading">loading</div>
-  <router-view v-else></router-view>
+  <teleport to="body" v-if="stateLoading.loading">
+    <div class="loading-container">
+      <div class="loading-wrapper">
+        <div class="loading-content"><h1>LOADING</h1></div>
+      </div>
+    </div>
+  </teleport>
+  <router-view></router-view>
 </template>
 
 <script setup>
@@ -20,6 +26,7 @@ onErrorCaptured((e) => {
 :root {
   --accent-color: rgb(12, 126, 172);
   --text-on-accent-color: white;
+  --body: #f9f9f9;
 }
 
 *,
@@ -41,7 +48,7 @@ body {
   font-family: Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f9f9f9;
+  background-color: var(--body);
 
   * > li {
     list-style: none;
@@ -78,5 +85,29 @@ body {
   margin-top: 1rem;
   color: red;
   font-size: 1.2rem;
+}
+
+.loading-container {
+  position: fixed;
+  z-index: 99;
+  overflow-y: auto;
+  background: var(--body);
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+}
+
+.loading-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.loading-content {
+  transform: translateY(-10rem);
+  display: flex;
+  overflow: hidden;
 }
 </style>
