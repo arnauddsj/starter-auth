@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import { reactive, watch } from 'vue'
+import { reactive, watchEffect } from 'vue'
 import { useLogin, isAuth } from '../../store/user'
 import { useRouter } from 'vue-router'
 
@@ -77,7 +77,7 @@ const submit = async () => {
   }
 }
 
-watch(() => {
+watchEffect(() => {
   // If user is logged-in force redirection to account
   if (isAuth.value) {
     router.push({ name: 'account' })
