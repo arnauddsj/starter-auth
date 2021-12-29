@@ -80,6 +80,8 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 90vw;
+  margin: 0 auto;
 }
 
 .error-container {

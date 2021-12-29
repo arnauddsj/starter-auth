@@ -39,7 +39,7 @@ nav {
   align-items: center;
   justify-content: space-between;
 
-  width: 100vw;
+  width: 100%;
   padding: 1rem 10rem;
 
   margin-top: 1rem;
