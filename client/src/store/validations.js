@@ -89,10 +89,6 @@ So to avoid that you need to pass the abortEarly option and set the boolean
 to false { abortEarly: false }.
 */
 
-const SET_VALIDATION_ERRORS = (errors) => {
-  stateValidation.errors = errors
-}
-
 const validateAll = async (inputs) => {
   try {
     await schema.validate(inputs, { abortEarly: true })
