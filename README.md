@@ -3,6 +3,16 @@
 This starter pack help me to quickly bootstrap any SaaS project with an already made auth architecture, made with the following stack express, prisma, passport, vue3.  
 It is divided in 2 folders, server for the api, and client for the front-end.
 
+Run in development:
+```bash
+npm run dev
+```  
+
+Run in production:
+```bash
+npm run start
+```
+
 ## Server 
 
 Server use expressjs, passportjs for the authentication part, and prisma as CRM to communicate with database. I personally use postgres but you can use anything that works with prisma.  
