@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/api.js"
+    "dev": "cross-env NODE_ENV=development nodemon src/api.js",
+    "start": "cross-env NODE_ENV=production nodemon src/api.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -32,6 +33,7 @@
     "yup-password": "^0.2.2"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "eslint": "^8.4.1",
     "prisma": "^3.7.0"
   }
