@@ -32,12 +32,14 @@ const { stateError } = storeError()
 
 import { storeUser } from '../../store/user'
 const { stateUser } = storeUser()
+const email = ref('')
 
 const isValid = ref(false)
 const sendEmailDisabled = ref(false)
 
 onMounted(async () => {
   // Validate token
+  email.value = route.query.email
   const token = route.query.evt
   const res = await api.verifyEmail(token)
 
@@ -62,7 +64,7 @@ const enableButton = () => {
 }
 
 const genEmailValidation = () => {
-  api.genEmailValidation(stateUser.email)
+  api.genEmailValidation(email.value)
   sendEmailDisabled.value = true
   enableButton()
 }
