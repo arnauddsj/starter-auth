@@ -69,7 +69,7 @@ const authCheck = async () => {
   SET_USER_DATA(res.data)
   SET_USER_AUTH()
   resetLoading()
-  return
+  return res
 }
 
 const useLogout = async () => {
