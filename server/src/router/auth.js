@@ -1,14 +1,12 @@
 const express = require('express')
+const router = new express.Router()
+const prisma = require('./config/prisma')
+
 const crypto = require('crypto')
 const passport = require('passport')
 
 const { genPassword } = require('../lib/passwordUtils')
 const { isAuth, isAdmin } = require('../middleware/auth')
-
-const { PrismaClient, Prisma } = require('@prisma/client')
-const prisma = new PrismaClient()
-
-const router = new express.Router()
 
 const {
   emailRegistration,

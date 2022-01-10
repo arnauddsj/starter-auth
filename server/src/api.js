@@ -4,9 +4,7 @@ const session = require('express-session')
 const passport = require('passport')
 
 require('./config/passport')
-
-const { PrismaClient } = require('@prisma/client')
-const prisma = new PrismaClient()
+const prisma = require('./config/prisma')
 const { PrismaSessionStore } = require('@quixo3/prisma-session-store')
 
 // Security
