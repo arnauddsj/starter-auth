@@ -1,6 +1,6 @@
 const express = require('express')
 const router = new express.Router()
-const prisma = require('./config/prisma')
+const prisma = require('../config/prisma')
 
 const crypto = require('crypto')
 const passport = require('passport')
