@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "user" ADD COLUMN     "provider" JSONB,
+ALTER COLUMN "hash" DROP NOT NULL,
+ALTER COLUMN "salt" DROP NOT NULL;

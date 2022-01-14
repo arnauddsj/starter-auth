@@ -21,8 +21,7 @@ const {
   validate,
 } = require('../middleware/validations.js')
 
-// [ ] DRY, Can improve code by writing a function to remove validationToken on errors
-
+// Local strategy
 // Register new user
 router.post('/auth/register', validateCredentials, async (req, res, next) => {
   // Those need to match with the customFields setup in config/passport.js
@@ -378,11 +377,39 @@ router.post(
   }
 )
 
+// Google strategy
+/* 
+Route called from front-end and open in popup or main window 
+depending on how is set the front.
+It use the GoogleStrategy info set in src/config/passport.js
+*/
+
+router.get(
+  '/auth/google',
+  passport.authenticate('google', { scope: ['email', 'profile'] })
+)
+
+router.get(
+  '/auth/google/callback',
+  passport.authenticate('google', {
+    successRedirect: `${process.env.CLIENT_URL}/account`,
+    failureUrl: `${process.env.CLIENT_URL}/auth`,
+    failureMessage: true,
+  })
+)
+
+// Logout
 router.get('/auth/logout', (req, res, next) => {
   // logout with passport
   req.logout()
+  req.session.destroy()
   res.send()
 })
+
+/* 
+On navigation auth check
+If needed use this route to check if user is still auth to navigate to required auth routes.
+*/
 
 router.get('/auth/auth-check', (req, res, next) => {
   //Created a separate route without middleware to not throw errors on app load
@@ -403,13 +430,6 @@ router.get('/auth/auth-check', (req, res, next) => {
 // })
 
 module.exports = router
-
-// Prisma middleware example
-// prisma.$use(async (params, next) => {
-//   if (params.model === 'User') console.log(params)
-//   const result = await next(params)
-//   return result
-// })
 
 // Error middleware template
 // try {

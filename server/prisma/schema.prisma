@@ -14,11 +14,12 @@ model User {
   id                    String     @id @default(uuid())
   email                 String     @unique
   userName              String?    @unique
-  hash                  String
-  salt                  String
+  hash                  String?
+  salt                  String?
   userType              UserType   @default(MEMBER)
   activation            Activation @default(PENDING)
-  emailVerificationLink String
+  emailVerificationLink String?
+  provider              Json?
   createdAt             DateTime   @default(now())
   updatedAt             DateTime   @updatedAt
 
