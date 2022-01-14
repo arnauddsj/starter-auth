@@ -1,11 +1,11 @@
 {
   "name": "server",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.1.0",
+  "description": "Quick Start Auth Server",
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon src/api.js",
-    "start": "cross-env NODE_ENV=production nodemon src/api.js"
+    "start": "node src/api.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
