@@ -16,7 +16,7 @@ const customFields = {
   passReqToCallback: true,
 }
 
-const callbackURL = '/api/v1/auth/google/callback',
+const callbackURL = '/api/v1/auth/google/callback'
 
 // Local strategy
 const verifyCallback = async (req, email, password, done) => {
@@ -53,6 +53,53 @@ const verifyCallback = async (req, email, password, done) => {
     })
 }
 
+const processUser = async (providerName, userData, done) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: userData[providerName].email,
+      },
+    })
+
+    if (user) {
+      // Check if already logged in with Provider, if never had, get provider profile info into provider entry
+      if (!user.provider) {
+        const updatedUser = await prisma.user.update({
+          where: {
+            email: userData.email,
+          },
+          data: {
+            activation: 'VALIDATED',
+            emailVerificationLink: '',
+            provider: {
+              ...userData,
+            },
+          },
+        })
+        // Send back updated user
+        done(null, updatedUser)
+      } else {
+        // Found user that already logged in with google
+        done(null, user)
+      }
+    } else {
+      let newUser = await prisma.user.create({
+        data: {
+          email: userData.email,
+          activation: 'VALIDATED',
+          provider: {
+            ...userData,
+          },
+        },
+      })
+
+      done(null, newUser)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 const strategy = new LocalStrategy(customFields, verifyCallback)
 passport.use(strategy)
 
@@ -65,97 +112,41 @@ passport.use(
       callbackURL,
     },
     async (accessToken, refreshToken, profile, done) => {
-      const email = profile.emails[0].value
-      const id = profile.id
-      // Uncomment this line if you want to use avatar pictures
-      // const photo = profile.photos[0].value
-
-      // Search user in DB
-      try {
-        const user = await prisma.user.findUnique({
-          where: {
-            email,
-          },
-        })
-
-        if (user) {
-          // Check if already logged in with Google, if never get google profile info into provider entry
-          if (!user.provider) {
-            const updatedUser = await prisma.user.update({
-              where: {
-                email: user.email,
-              },
-              data: {
-                activation: 'VALIDATED',
-                emailVerificationLink: '',
-                provider: {
-                  google: {
-                    id,
-                    // Uncomment next line if you want to use photos for avatars
-                    // photo: profile.photos[0].value,
-                  },
-                },
-              },
-            })
-            // Send back updated user
-            done(null, updatedUser)
-          } else {
-            // Found user that already logged in with google
-            done(null, user)
-          }
-        } else {
-          // Create a user
-          // if (!profile.emails[0].verified) {
-          //   let error = new Error('Google email not verified.')
-          //   error.statusCode = 401
-          //   throw error
-          // }
-
-          let newUser = await prisma.user.create({
-            data: {
-              email: profile.emails[0].value,
-              activation: 'VALIDATED',
-              provider: {
-                google: {
-                  id,
-                  // Uncomment next line if you want to use photos for avatars
-                  // photo,
-                },
-              },
-            },
-          })
-
-          done(null, newUser)
-        }
-      } catch (error) {
-        console.log(error)
+      const userData = {
+        google: {
+          email: profile.emails[0].value,
+          id: profile.id,
+          photo: profile.photos[0].value,
+        },
       }
+
+      await processUser('google', userData, done)
     }
   )
 )
 
 //facebook strategy
-passport.use(
-  new FacebookStrategy(
-    {
-      // pull in our app id and secret from our auth.js file
-      clientID: process.env.FACEBOOK_APP_ID,
-      clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL,
-      profileFields: [
-        'id',
-        'displayName',
-        'name',
-        'picture.type(large)',
-        'email',
-      ],
-    }, // facebook will send back the token and profile
-    function (token, refreshToken, profile, done) {
-      console.log(profile)
-      return done(null, profile)
-    }
-  )
-)
+// passport.use(
+//   new FacebookStrategy(
+//     {
+//       // pull in our app id and secret from our auth.js file
+//       clientID: process.env.FACEBOOK_APP_ID,
+//       clientSecret: process.env.FACEBOOK_APP_SECRET,
+//       callbackURL,
+//       profileFields: [
+//         'id',
+//         'displayName',
+//         'name',
+//         'picture.type(large)',
+//         'email',
+//       ],
+//     }, // facebook will send back the token and profile
+//     function (token, refreshToken, profile, done) {
+//       console.log(profile)
+//       return done(null, profile)
+//     }
+//   )
+// )
 
 // Cookie Sessions
 passport.serializeUser((user, done) => {
