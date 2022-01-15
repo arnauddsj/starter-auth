@@ -49,6 +49,7 @@ deserializeUser function assigns req._passport.session.user to user field of req
 1 - app.use(session())
 2 - app.use(passport.initialize())
 3 - app.use(passport.session())
+
 */
 // Express session
 app.use(
@@ -57,8 +58,8 @@ app.use(
       maxAge: 7 * 24 * 60 * 60 * 1000, // ms
     },
     secret: process.env.SESSION_SECRET,
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     store: new PrismaSessionStore(prisma, {
       checkPeriod: 2 * 60 * 1000, //ms
       dbRecordIdIsSessionId: true,

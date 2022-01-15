@@ -9,6 +9,7 @@ const LinkedInStrategy = require('passport-linkedin-oauth2').Strategy
 const TwitterStrategy = require('passport-twitter').Strategy
 
 const verifyPassword = require('../lib/passwordUtils').verifyPassword
+const { serializeUser } = require('passport')
 
 // change default passport expected variable name to email
 const customFields = {
@@ -16,7 +17,10 @@ const customFields = {
   passReqToCallback: true,
 }
 
-const callbackURL = '/api/v1/auth/google/callback'
+const callbackGoogleURL = '/api/v1/auth/google/callback'
+const callbackFacebookURL = '/api/v1/auth/facebook/callback'
+// const callbackFacebookURL =
+//   'https://14dc-213-44-151-46.ngrok.io/api/v1/auth/facebook/callback'
 
 // Local strategy
 const verifyCallback = async (req, email, password, done) => {
@@ -53,6 +57,7 @@ const verifyCallback = async (req, email, password, done) => {
     })
 }
 
+// Global function to handle all social provider with the same logic
 const processUser = async (providerName, userData, done) => {
   try {
     const user = await prisma.user.findUnique({
@@ -63,30 +68,44 @@ const processUser = async (providerName, userData, done) => {
 
     if (user) {
       // Check if already logged in with Provider, if never had, get provider profile info into provider entry
-      if (!user.provider) {
+      if (!user.provider[providerName]) {
+        // If other provider exist save the object and add new provider
+        let provider = {}
+
+        if (user.provider) {
+          provider = {
+            ...user.provider,
+            ...userData,
+          }
+        } else {
+          provider = { ...userData }
+        }
+
         const updatedUser = await prisma.user.update({
           where: {
-            email: userData.email,
+            email: userData[providerName].email,
           },
           data: {
             activation: 'VALIDATED',
             emailVerificationLink: '',
-            provider: {
-              ...userData,
-            },
+            provider,
           },
         })
         // Send back updated user
+
         done(null, updatedUser)
       } else {
         // Found user that already logged in with google
+
         done(null, user)
       }
     } else {
+      // No user with this email, create one
       let newUser = await prisma.user.create({
         data: {
-          email: userData.email,
+          email: userData[providerName].email,
           activation: 'VALIDATED',
+          emailVerificationLink: '',
           provider: {
             ...userData,
           },
@@ -109,7 +128,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_APP_ID,
       clientSecret: process.env.GOOGLE_APP_SECRET,
-      callbackURL,
+      callbackURL: callbackGoogleURL,
     },
     async (accessToken, refreshToken, profile, done) => {
       const userData = {
@@ -125,31 +144,39 @@ passport.use(
   )
 )
 
-//facebook strategy
-// passport.use(
-//   new FacebookStrategy(
-//     {
-//       // pull in our app id and secret from our auth.js file
-//       clientID: process.env.FACEBOOK_APP_ID,
-//       clientSecret: process.env.FACEBOOK_APP_SECRET,
-//       callbackURL,
-//       profileFields: [
-//         'id',
-//         'displayName',
-//         'name',
-//         'picture.type(large)',
-//         'email',
-//       ],
-//     }, // facebook will send back the token and profile
-//     function (token, refreshToken, profile, done) {
-//       console.log(profile)
-//       return done(null, profile)
-//     }
-//   )
-// )
+// facebook strategy
+passport.use(
+  new FacebookStrategy(
+    {
+      // pull in our app id and secret from our auth.js file
+      clientID: process.env.FACEBOOK_APP_ID,
+      clientSecret: process.env.FACEBOOK_APP_SECRET,
+      callbackURL: callbackFacebookURL,
+      profileFields: [
+        'id',
+        'displayName',
+        'name',
+        'picture.type(large)',
+        'email',
+      ],
+    }, // facebook will send back the token and profile
+    async (accessToken, refreshToken, profile, done) => {
+      const userData = {
+        facebook: {
+          id: profile.id,
+          email: profile.emails[0].value,
+          photo: profile.photos[0].value,
+        },
+      }
+
+      await processUser('facebook', userData, done)
+    }
+  )
+)
 
 // Cookie Sessions
 passport.serializeUser((user, done) => {
+  console.log('2 serializeUser', user)
   /* 
   Persist user data (after successful authentication) into session. 
   use,id is saved to session : req.session.passport.user = {id: '..'}
@@ -158,14 +185,15 @@ passport.serializeUser((user, done) => {
   done(null, user.id)
 })
 
-passport.deserializeUser((userId, done) => {
+passport.deserializeUser((id, done) => {
+  console.log('3', id)
   // Used to retrieve user data from session.
 
   // Add to 'select' any data you would like to catch from DB when user login
   prisma.user
     .findUnique({
       where: {
-        id: userId,
+        id,
       },
       select: {
         email: true,

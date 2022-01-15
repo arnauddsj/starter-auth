@@ -3,6 +3,7 @@
     <h2>Login with social</h2>
     <!-- SOCIAL STRATEGIES -->
     <SignInGoogle />
+    <SignInFacebook />
     <Divider />
 
     <!-- LOCAL STRATEGIES -->
@@ -48,6 +49,7 @@ import { reactive, watchEffect } from 'vue'
 import { useLogin, isAuth } from '../../store/user'
 import { useRouter } from 'vue-router'
 import SignInGoogle from '../../components/auth/SignInGoogle.vue'
+import SignInFacebook from '../../components/auth/SignInFacebook.vue'
 import Divider from '../../components/auth/Divider.vue'
 
 import {
