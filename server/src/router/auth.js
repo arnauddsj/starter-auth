@@ -416,6 +416,23 @@ router.get(
   })
 )
 
+// Twitter strategy
+router.get(
+  '/auth/twitter',
+  passport.authenticate('twitter', {
+    scope: 'email',
+  })
+)
+
+router.get(
+  '/auth/twitter/callback',
+  passport.authenticate('twitter', {
+    successRedirect: `${process.env.CLIENT_URL}/account`,
+    failureUrl: `${process.env.CLIENT_URL}/auth`,
+    failureMessage: true,
+  })
+)
+
 // Logout
 router.get('/auth/logout', (req, res, next) => {
   // logout with passport

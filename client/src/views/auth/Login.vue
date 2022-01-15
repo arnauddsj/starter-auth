@@ -2,8 +2,9 @@
   <div class="login__container">
     <h2>Login with social</h2>
     <!-- SOCIAL STRATEGIES -->
-    <SignInGoogle />
-    <SignInFacebook />
+    <SignInGoogle class="social-login" />
+    <SignInFacebook class="social-login" />
+    <SignInTwitter class="social-login" />
     <Divider />
 
     <!-- LOCAL STRATEGIES -->
@@ -58,6 +59,7 @@ import {
   storeValidation,
   resetValidationError,
 } from '../../store/validations'
+import SignInTwitter from '../../components/auth/SignInTwitter.vue'
 const { stateValidation } = storeValidation()
 
 const router = useRouter()
@@ -138,5 +140,9 @@ p {
 .forgot-password {
   margin-top: 0.6rem;
   font-size: 1.2rem;
+}
+
+.social-login:not(:first-child) {
+  margin-top: 1rem;
 }
 </style>

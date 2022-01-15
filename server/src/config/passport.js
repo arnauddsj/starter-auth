@@ -18,9 +18,10 @@ const customFields = {
 }
 
 const callbackGoogleURL = '/api/v1/auth/google/callback'
-const callbackFacebookURL = '/api/v1/auth/facebook/callback'
-// const callbackFacebookURL =
-//   'https://14dc-213-44-151-46.ngrok.io/api/v1/auth/facebook/callback'
+// const callbackFacebookURL = '/api/v1/auth/facebook/callback'
+const callbackTwitterURL = '/api/v1/auth/twitter/callback'
+const callbackFacebookURL =
+  'https://1b5b-213-44-151-46.ngrok.io/api/v1/auth/facebook/callback'
 
 // Local strategy
 const verifyCallback = async (req, email, password, done) => {
@@ -93,11 +94,10 @@ const processUser = async (providerName, userData, done) => {
         })
         // Send back updated user
 
-        done(null, updatedUser)
+        return done(null, updatedUser)
       } else {
         // Found user that already logged in with google
-
-        done(null, user)
+        return done(null, user)
       }
     } else {
       // No user with this email, create one
@@ -112,7 +112,7 @@ const processUser = async (providerName, userData, done) => {
         },
       })
 
-      done(null, newUser)
+      return done(null, newUser)
     }
   } catch (error) {
     console.log(error)
@@ -126,8 +126,8 @@ passport.use(strategy)
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_APP_ID,
-      clientSecret: process.env.GOOGLE_APP_SECRET,
+      clientID: process.env.GOOGLE_API_ID,
+      clientSecret: process.env.GOOGLE_API_SECRET,
       callbackURL: callbackGoogleURL,
     },
     async (accessToken, refreshToken, profile, done) => {
@@ -149,8 +149,8 @@ passport.use(
   new FacebookStrategy(
     {
       // pull in our app id and secret from our auth.js file
-      clientID: process.env.FACEBOOK_APP_ID,
-      clientSecret: process.env.FACEBOOK_APP_SECRET,
+      clientID: process.env.FACEBOOK_API_ID,
+      clientSecret: process.env.FACEBOOK_API_SECRET,
       callbackURL: callbackFacebookURL,
       profileFields: [
         'id',
@@ -160,11 +160,41 @@ passport.use(
         'email',
       ],
     }, // facebook will send back the token and profile
-    async (accessToken, refreshToken, profile, done) => {
+    async (token, refreshToken, profile, done) => {
+      // return cb(null, profile)
+      if (profile) {
+        const userData = {
+          facebook: {
+            id: profile.id,
+            email: profile.emails[0].value,
+            photo: profile.photos[0].value,
+          },
+        }
+
+        await processUser('facebook', userData, done)
+      } else {
+        let error = new Error('Unknown error')
+        done(error)
+      }
+    }
+  )
+)
+
+//Twitter Strategy
+passport.use(
+  new TwitterStrategy(
+    {
+      consumerKey: process.env.TWITTER_API_ID,
+      consumerSecret: process.env.TWITTER_API_SECRET,
+      callbackURL: callbackTwitterURL,
+      proxy: true,
+    },
+    async function (token, tokenSecret, profile, done) {
+      console.log(profile)
       const userData = {
-        facebook: {
-          id: profile.id,
+        google: {
           email: profile.emails[0].value,
+          id: profile.id,
           photo: profile.photos[0].value,
         },
       }
@@ -176,22 +206,20 @@ passport.use(
 
 // Cookie Sessions
 passport.serializeUser((user, done) => {
-  console.log('2 serializeUser', user)
   /* 
   Persist user data (after successful authentication) into session. 
   use,id is saved to session : req.session.passport.user = {id: '..'}
   */
 
+  console.log('2 serializeUser', user)
   done(null, user.id)
 })
 
-passport.deserializeUser((id, done) => {
-  console.log('3', id)
+passport.deserializeUser(async (id, done) => {
   // Used to retrieve user data from session.
-
   // Add to 'select' any data you would like to catch from DB when user login
-  prisma.user
-    .findUnique({
+  try {
+    const user = await prisma.user.findUnique({
       where: {
         id,
       },
@@ -202,12 +230,11 @@ passport.deserializeUser((id, done) => {
         // otherData: 'My other data',
       },
     })
-    .then((user) => {
-      // Attach user to the request as res.user
+
+    if (user) {
       done(null, user)
-    })
-    .catch((error) => {
-      // next(error)
-      done(error)
-    })
+    }
+  } catch (error) {
+    done(error)
+  }
 })

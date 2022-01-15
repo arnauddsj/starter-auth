@@ -27,13 +27,13 @@
           d="M9 3.5795c1.3214 0 2.5077.4541 3.4405 1.346l2.5813-2.5814C13.4632.8918 11.426 0 9 0 5.4818 0 2.4382 2.0168.9573 4.9582L3.964 7.29C4.6718 5.1627 6.6559 3.5795 9 3.5795z"
         ></path>
       </svg>
-      <span> Sign in with Google </span>
+      <span> Sign in with Twitter </span>
     </button>
   </div>
 </template>
 <script setup>
 const signIn = () => {
-  window.open(`${import.meta.env.VITE_API_URL}/auth/google`, '_self')
+  window.open(`${import.meta.env.VITE_API_URL}/auth/twitter`, '_self')
 }
 </script>
 <style lang="scss" scoped>

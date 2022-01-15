@@ -19,7 +19,7 @@ const { stateError } = storeError()
 
 <style lang="scss" scoped>
 .auth-container {
-  padding-top: 10rem;
+  padding-top: 6rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -27,7 +27,7 @@ const { stateError } = storeError()
 }
 
 .auth-wrapper {
-  width: 25rem;
+  width: 30rem;
 }
 
 .logo {
