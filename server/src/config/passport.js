@@ -1,8 +1,13 @@
 const passport = require('passport')
-const GoogleStrategy = require('passport-google-oauth20').Strategy
-const LocalStrategy = require('passport-local').Strategy
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
+
+const LocalStrategy = require('passport-local').Strategy
+const GoogleStrategy = require('passport-google-oauth20').Strategy
+const FacebookStrategy = require('passport-facebook').Strategy
+const LinkedInStrategy = require('passport-linkedin-oauth2').Strategy
+const TwitterStrategy = require('passport-twitter').Strategy
+
 const verifyPassword = require('../lib/passwordUtils').verifyPassword
 
 // change default passport expected variable name to email
@@ -10,6 +15,8 @@ const customFields = {
   usernameField: 'email',
   passReqToCallback: true,
 }
+
+const callbackURL = '/api/v1/auth/google/callback',
 
 // Local strategy
 const verifyCallback = async (req, email, password, done) => {
@@ -55,14 +62,19 @@ passport.use(
     {
       clientID: process.env.GOOGLE_APP_ID,
       clientSecret: process.env.GOOGLE_APP_SECRET,
-      callbackURL: '/api/v1/auth/google/callback',
+      callbackURL,
     },
     async (accessToken, refreshToken, profile, done) => {
+      const email = profile.emails[0].value
+      const id = profile.id
+      // Uncomment this line if you want to use avatar pictures
+      // const photo = profile.photos[0].value
+
       // Search user in DB
       try {
         const user = await prisma.user.findUnique({
           where: {
-            email: profile.emails[0].value,
+            email,
           },
         })
 
@@ -78,8 +90,9 @@ passport.use(
                 emailVerificationLink: '',
                 provider: {
                   google: {
-                    id: profile.id,
-                    photo: profile.photos[0].value,
+                    id,
+                    // Uncomment next line if you want to use photos for avatars
+                    // photo: profile.photos[0].value,
                   },
                 },
               },
@@ -92,11 +105,11 @@ passport.use(
           }
         } else {
           // Create a user
-          if (!profile.emails[0].verified) {
-            let error = new Error('Google email not verified.')
-            error.statusCode = 401
-            throw error
-          }
+          // if (!profile.emails[0].verified) {
+          //   let error = new Error('Google email not verified.')
+          //   error.statusCode = 401
+          //   throw error
+          // }
 
           let newUser = await prisma.user.create({
             data: {
@@ -104,8 +117,9 @@ passport.use(
               activation: 'VALIDATED',
               provider: {
                 google: {
-                  id: profile.id,
-                  photo: profile.photos[0].value,
+                  id,
+                  // Uncomment next line if you want to use photos for avatars
+                  // photo,
                 },
               },
             },
@@ -116,6 +130,29 @@ passport.use(
       } catch (error) {
         console.log(error)
       }
+    }
+  )
+)
+
+//facebook strategy
+passport.use(
+  new FacebookStrategy(
+    {
+      // pull in our app id and secret from our auth.js file
+      clientID: process.env.FACEBOOK_APP_ID,
+      clientSecret: process.env.FACEBOOK_APP_SECRET,
+      callbackURL,
+      profileFields: [
+        'id',
+        'displayName',
+        'name',
+        'picture.type(large)',
+        'email',
+      ],
+    }, // facebook will send back the token and profile
+    function (token, refreshToken, profile, done) {
+      console.log(profile)
+      return done(null, profile)
     }
   )
 )

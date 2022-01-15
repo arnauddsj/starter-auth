@@ -1,6 +1,8 @@
 <template>
   <div class="logo">
-    <router-link :to="{ name: 'home' }">appLogo</router-link>
+    <router-link :to="{ name: 'home' }">
+      <img src="/logo.svg" alt="Logo quick start" />
+    </router-link>
   </div>
 </template>
 

@@ -1,6 +1,8 @@
 <template>
   <div class="">
-    <h2>Register</h2>
+    <h2>Register with social</h2>
+    <SignInGoogle />
+    <Divider />
     <form @submit.prevent="submit">
       <label for="email">Email</label>
       <input
@@ -51,6 +53,8 @@
 import { reactive, ref, watchEffect } from 'vue'
 import { register, isAuth } from '../../store/user'
 import { useRouter } from 'vue-router'
+import SignInGoogle from '../../components/auth/SignInGoogle.vue'
+import Divider from '../../components/auth/Divider.vue'
 
 import {
   validate,
@@ -97,7 +101,9 @@ watchEffect(() => {
 
 <style lang="scss" scoped>
 h2 {
-  margin-bottom: 5rem;
+  font-size: 1.7rem;
+  margin-bottom: 4rem;
+  text-align: center;
 }
 
 form {

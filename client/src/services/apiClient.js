@@ -55,7 +55,9 @@ export default {
   },
   async passwordResetRequest(email) {
     try {
-      const res = await apiClient.post('/auth/password-reset', { email })
+      const res = await apiClient.post('/auth/password-reset-request', {
+        email,
+      })
       return res
     } catch (error) {
       setError(error)

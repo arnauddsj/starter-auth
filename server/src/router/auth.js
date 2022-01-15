@@ -246,7 +246,7 @@ router.post('/auth/login', validateCredentials, async (req, res, next) => {
 })
 
 router.post(
-  '/auth/password-reset',
+  '/auth/password-reset-request',
   validate('email'),
   async (req, res, next) => {
     const { email } = req.body
@@ -345,7 +345,7 @@ router.post(
       }
 
       // Hash new password
-      const saltHash = genPassword(password)
+      const saltHash = await genPassword(password)
 
       const salt = saltHash.salt
       const hash = saltHash.hash
