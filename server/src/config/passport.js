@@ -19,10 +19,8 @@ const customFields = {
 }
 
 const callbackGoogleURL = '/api/v1/auth/google/callback'
-// const callbackFacebookURL = '/api/v1/auth/facebook/callback'
+const callbackFacebookURL = '/api/v1/auth/facebook/callback'
 const callbackTwitterURL = '/api/v1/auth/twitter/callback'
-const callbackFacebookURL =
-  'https://f37c-176-172-62-225.ngrok.io/api/v1/auth/facebook/callback'
 const callbackGithubURL = '/api/v1/auth/github/callback'
 const callbackLinkedinURL = '/api/v1/auth/linkedin/callback'
 
