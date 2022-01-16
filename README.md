@@ -78,7 +78,7 @@ A lot need to be improved and fine tuned. CSS is quite ugly, but this actual ver
 
 Future improvements:  
 1 [x] Add Yup validations on the server side as well (important). -> Done as a middleware  
-2 [ ] Google, twitter, github passport strategies.  
+2 [x] Google, twitter, github, linkedin, facebook passport strategies.  
 3 [ ] Better prisma native errors handling.  
 4 [ ] Add a simple admin interface for managing users (there is already an admin check logic but not used yet).  
 5 [ ] Add simple user profile to let user changes their infos.  
