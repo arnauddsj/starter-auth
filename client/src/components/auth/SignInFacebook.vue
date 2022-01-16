@@ -32,22 +32,15 @@ const signIn = () => {
   align-items: center;
   justify-content: space-evenly;
   width: 100%;
-  border: 2px solid #4267b2;
-  transition: background-color 0.1s, box-shadow 0.3s;
-
   padding: 1rem 3rem 1rem 3rem;
-
-  color: #4267b2;
   font-size: 1.6rem;
   font-weight: 800;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-
-  background-position: 12px 11px;
+  border: 2px solid #4267b2;
+  color: #4267b2;
 
   &:hover {
-    background-color: #4267b2;
     color: white;
+    background-color: #4267b2;
 
     svg {
       fill: white;
@@ -55,8 +48,8 @@ const signIn = () => {
   }
 
   &:active {
-    background-color: #4267b2;
     color: white;
+    background-color: #4267b2;
   }
 
   svg {

@@ -399,13 +399,7 @@ router.get(
 )
 
 // Facebook strategy
-
-router.get(
-  '/auth/facebook',
-  passport.authenticate('facebook', {
-    scope: ['email', 'public_profile'],
-  })
-)
+router.get('/auth/facebook', passport.authenticate('facebook'))
 
 router.get(
   '/auth/facebook/callback',
@@ -417,16 +411,35 @@ router.get(
 )
 
 // Twitter strategy
-router.get(
-  '/auth/twitter',
-  passport.authenticate('twitter', {
-    scope: 'email',
-  })
-)
+router.get('/auth/twitter', passport.authenticate('twitter'))
 
 router.get(
   '/auth/twitter/callback',
   passport.authenticate('twitter', {
+    successRedirect: `${process.env.CLIENT_URL}/account`,
+    failureUrl: `${process.env.CLIENT_URL}/auth`,
+    failureMessage: true,
+  })
+)
+
+// Github strategy
+router.get('/auth/github', passport.authenticate('github'))
+
+router.get(
+  '/auth/github/callback',
+  passport.authenticate('github', {
+    successRedirect: `${process.env.CLIENT_URL}/account`,
+    failureUrl: `${process.env.CLIENT_URL}/auth`,
+    failureMessage: true,
+  })
+)
+
+// Linkedin strategy
+router.get('/auth/linkedin', passport.authenticate('linkedin'))
+
+router.get(
+  '/auth/linkedin/callback',
+  passport.authenticate('linkedin', {
     successRedirect: `${process.env.CLIENT_URL}/account`,
     failureUrl: `${process.env.CLIENT_URL}/auth`,
     failureMessage: true,

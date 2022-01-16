@@ -1,10 +1,11 @@
 <template>
   <div class="login__container">
-    <h2>Login with social</h2>
     <!-- SOCIAL STRATEGIES -->
     <SignInGoogle class="social-login" />
     <SignInFacebook class="social-login" />
     <SignInTwitter class="social-login" />
+    <SignInGithub class="social-login" />
+    <SignInLinkedin class="social-login" />
     <Divider />
 
     <!-- LOCAL STRATEGIES -->
@@ -36,7 +37,7 @@
         >Forgot password?</router-link
       >
 
-      <button type="submit">Login</button>
+      <button type="submit">Sign In</button>
     </form>
     <p>
       No account?
@@ -51,6 +52,9 @@ import { useLogin, isAuth } from '../../store/user'
 import { useRouter } from 'vue-router'
 import SignInGoogle from '../../components/auth/SignInGoogle.vue'
 import SignInFacebook from '../../components/auth/SignInFacebook.vue'
+import SignInTwitter from '../../components/auth/SignInTwitter.vue'
+import SignInGithub from '../../components/auth/SignInGithub.vue'
+import SignInLinkedin from '../../components/auth/SignInLinkedin.vue'
 import Divider from '../../components/auth/Divider.vue'
 
 import {
@@ -59,7 +63,6 @@ import {
   storeValidation,
   resetValidationError,
 } from '../../store/validations'
-import SignInTwitter from '../../components/auth/SignInTwitter.vue'
 const { stateValidation } = storeValidation()
 
 const router = useRouter()
@@ -123,11 +126,18 @@ form {
 
   button {
     margin-top: 2rem;
-    padding: 1rem 1rem;
-
+    padding: 1.2rem 1rem;
     font-weight: 800;
     color: var(--text-on-accent-color);
     background-color: var(--accent-color);
+
+    &:hover {
+      background-color: rgb(12, 117, 158);
+    }
+
+    &:active {
+      background-color: #616161;
+    }
   }
 }
 

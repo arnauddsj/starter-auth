@@ -7,6 +7,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy
 const FacebookStrategy = require('passport-facebook').Strategy
 const LinkedInStrategy = require('passport-linkedin-oauth2').Strategy
 const TwitterStrategy = require('passport-twitter').Strategy
+const GithubStrategy = require('passport-github2').Strategy
 
 const verifyPassword = require('../lib/passwordUtils').verifyPassword
 const { serializeUser } = require('passport')
@@ -21,7 +22,9 @@ const callbackGoogleURL = '/api/v1/auth/google/callback'
 // const callbackFacebookURL = '/api/v1/auth/facebook/callback'
 const callbackTwitterURL = '/api/v1/auth/twitter/callback'
 const callbackFacebookURL =
-  'https://1b5b-213-44-151-46.ngrok.io/api/v1/auth/facebook/callback'
+  'https://f37c-176-172-62-225.ngrok.io/api/v1/auth/facebook/callback'
+const callbackGithubURL = '/api/v1/auth/github/callback'
+const callbackLinkedinURL = '/api/v1/auth/linkedin/callback'
 
 // Local strategy
 const verifyCallback = async (req, email, password, done) => {
@@ -152,16 +155,10 @@ passport.use(
       clientID: process.env.FACEBOOK_API_ID,
       clientSecret: process.env.FACEBOOK_API_SECRET,
       callbackURL: callbackFacebookURL,
-      profileFields: [
-        'id',
-        'displayName',
-        'name',
-        'picture.type(large)',
-        'email',
-      ],
+      profileFields: ['id', 'picture.type(large)', 'email'],
     }, // facebook will send back the token and profile
     async (token, refreshToken, profile, done) => {
-      // return cb(null, profile)
+      console.log(profile)
       if (profile) {
         const userData = {
           facebook: {
@@ -187,19 +184,66 @@ passport.use(
       consumerKey: process.env.TWITTER_API_ID,
       consumerSecret: process.env.TWITTER_API_SECRET,
       callbackURL: callbackTwitterURL,
-      proxy: true,
+      includeEmail: true,
     },
     async function (token, tokenSecret, profile, done) {
-      console.log(profile)
       const userData = {
-        google: {
+        twitter: {
           email: profile.emails[0].value,
           id: profile.id,
           photo: profile.photos[0].value,
         },
       }
 
-      await processUser('facebook', userData, done)
+      await processUser('twitter', userData, done)
+    }
+  )
+)
+
+//Github Strategy
+passport.use(
+  new GithubStrategy(
+    {
+      clientID: process.env.GITHUB_API_ID,
+      clientSecret: process.env.GITHUB_API_SECRET,
+      callbackURL: callbackGithubURL,
+      scope: ['user:email'],
+    },
+    async function (token, tokenSecret, profile, done) {
+      console.log(profile)
+      const userData = {
+        github: {
+          email: profile.emails[0].value,
+          id: profile.id,
+          photo: profile.photos[0].value,
+        },
+      }
+
+      await processUser('github', userData, done)
+    }
+  )
+)
+
+//Linkedin Strategy
+passport.use(
+  new LinkedInStrategy(
+    {
+      clientID: process.env.LINKEDIN_API_ID,
+      clientSecret: process.env.LINKEDIN_API_SECRET,
+      callbackURL: callbackLinkedinURL,
+      scope: ['r_emailaddress', 'r_liteprofile'],
+    },
+    async function (token, tokenSecret, profile, done) {
+      console.log(profile)
+      const userData = {
+        linkedin: {
+          email: profile.emails[0].value,
+          id: profile.id,
+          photo: profile.photos[0].value,
+        },
+      }
+
+      await processUser('linkedin', userData, done)
     }
   )
 )
