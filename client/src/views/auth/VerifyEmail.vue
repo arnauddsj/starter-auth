@@ -20,15 +20,12 @@
   Verify email link send to this page. On load the page check the token and show if account is validate or not.
   If not valid use can resend a validation mail.
   */
-import { onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { onMounted, ref, inject } from 'vue'
+import { useRoute } from 'vue-router'
 const route = useRoute()
-const router = useRouter()
 
 import api from '../../services/apiClient'
-
-import { storeError } from '../../store/errorHandler'
-const { stateError } = storeError()
+const toast = inject(['moshaToast'])
 
 import { storeUser } from '../../store/user'
 const { stateUser } = storeUser()
@@ -41,19 +38,28 @@ onMounted(async () => {
   // Validate token
   email.value = route.query.email
   const token = route.query.evt
-  const res = await api.verifyEmail(token)
+  try {
+    const res = await api.verifyEmail(token)
 
-  // [ ] Use errorHandler
-  if (res?.status !== 200) {
-    let error = new Error('Could not verify email')
-    error.statusCode = 401
-    throw error
-  }
+    // [ ] Use errorHandler
+    if (res?.status !== 200) {
+      let error = new Error('Could not verify email')
+      error.statusCode = 401
+      throw error
+    }
+    isValid.value = true
 
-  isValid.value = true
-
-  if (!stateUser.email || !route.query.email) {
-    sendEmailDisabled.value = true
+    if (!stateUser.email || !route.query.email) {
+      sendEmailDisabled.value = true
+    }
+  } catch (error) {
+    toast(error.message, {
+      position: 'bottom-right',
+      transition: 'bounce',
+      showIcon: 'true',
+      type: 'danger',
+      timeout: 3000,
+    })
   }
 })
 

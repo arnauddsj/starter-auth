@@ -1,13 +1,12 @@
 <template>
   <div class="">
-    <h2>Register with social</h2>
     <!-- SOCIAL STRATEGIES -->
     <SignInGoogle class="social-login" />
     <SignInFacebook class="social-login" />
     <SignInTwitter class="social-login" />
     <SignInGithub class="social-login" />
     <SignInLinkedin class="social-login" />
-    <Divider />
+    <Divider>or register</Divider>
     <form @submit.prevent="submit">
       <label for="email">Email</label>
       <input
@@ -65,12 +64,7 @@ import SignInGithub from '../../components/auth/SignInGithub.vue'
 import SignInLinkedin from '../../components/auth/SignInLinkedin.vue'
 import Divider from '../../components/auth/Divider.vue'
 
-import {
-  validate,
-  validateAll,
-  storeValidation,
-  resetValidationError,
-} from '../../store/validations'
+import { storeValidation, resetValidationError } from '../../store/validations'
 const { stateValidation } = storeValidation()
 
 const router = useRouter()

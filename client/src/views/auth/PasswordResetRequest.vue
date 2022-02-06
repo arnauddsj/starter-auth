@@ -27,11 +27,7 @@
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 
-import {
-  validate,
-  storeValidation,
-  resetValidationError,
-} from '../../store/validations'
+import { storeValidation, resetValidationError } from '../../store/validations'
 const { stateValidation } = storeValidation()
 import api from '../../services/apiClient'
 

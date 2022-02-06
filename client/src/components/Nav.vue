@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import Logo from './Logo.vue'
+import Logo from './layout/Logo.vue'
 import { isAuth, useLogout } from '../store/user'
 import { useRouter } from 'vue-router'
 

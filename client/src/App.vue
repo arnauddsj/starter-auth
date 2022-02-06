@@ -1,25 +1,37 @@
 <template>
   <teleport to="body" v-if="stateLoading.loading">
-    <div class="loading-container">
-      <div class="loading-wrapper">
-        <div class="loading-content"><h1>LOADING</h1></div>
-      </div>
-    </div>
+    <Loading />
   </teleport>
-  <router-view></router-view>
+  <Navbar v-if="!route.meta.hideNavigation" />
+  <div class="app-wrapper flex-col-center">
+    <router-view></router-view>
+  </div>
+  <Footer />
 </template>
 
 <script setup>
-import { onErrorCaptured, onBeforeMount } from 'vue'
+import { onErrorCaptured, onBeforeMount, inject } from 'vue'
+import { useRoute } from 'vue-router'
 import { storeLoading } from './store/loadingHandler'
-import { setError } from './store/errorHandler'
 import { authCheck } from './store/user'
 
+import Loading from './components/layout/Loading.vue'
+import Navbar from './components/layout/Navbar.vue'
+import Footer from './components/layout/Footer.vue'
+
+const route = useRoute()
 const { stateLoading } = storeLoading()
 
+const toast = inject(['moshaToast'])
+
 onErrorCaptured((e) => {
-  setError(e)
-  return true
+  return toast(e.message, {
+    position: 'bottom-right',
+    transition: 'bounce',
+    showIcon: 'true',
+    type: 'danger',
+    timeout: 3000,
+  })
 })
 
 onBeforeMount(async () => {
@@ -30,9 +42,13 @@ onBeforeMount(async () => {
 
 <style lang="scss">
 :root {
-  --accent-color: rgb(12, 126, 172);
+  --accent-color: rgb(41, 166, 216);
   --text-on-accent-color: white;
-  --body: #f9f9f9;
+  --body-txt-color: #2e3d3d;
+  --body-bg: #f9fdfd;
+
+  --min-desktop-width: 90%;
+  --max-desktop-width: 148rem;
 }
 
 *,
@@ -40,19 +56,28 @@ onBeforeMount(async () => {
 *::after {
   margin: 0;
   padding: 0;
-  box-sizing: inherit;
+  box-sizing: border-box;
 }
 
 html {
-  box-sizing: border-box;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  line-height: 2.2em;
   font-size: 62.5%; // 10px/16px = 62.5% -> 1rem = 10px
 }
 
 body {
-  height: 100vh;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+
   font-size: 1.6rem;
-  font-family: Helvetica, Arial, sans-serif;
-  background-color: var(--body);
+  font-weight: 400;
+
+  font-family: 'Ubuntu', helvetica, arial, sans-serif;
+  color: var(--body-txt-color);
+  background-color: var(--body-bg);
 
   * > li {
     list-style: none;
@@ -71,49 +96,50 @@ body {
     background: none;
     cursor: pointer;
   }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
 }
 
-.app-container {
+// GENERAL CLASSES
+h1,
+h2,
+h3 {
+  font-weight: 900;
+  line-height: 1; // Let picture shrink but not get oversized.
+}
+
+.text-center {
+  text-align: center;
+}
+
+.flex-col-center {
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
+
+.flex-row-center {
+  display: flex;
   justify-content: center;
   align-items: center;
-  width: 90vw;
-  margin: 0 auto;
 }
 
-.error-container {
-  margin-top: 5rem;
-  color: red;
+.container-size {
+  width: min(var(--min-desktop-width), var(--max-desktop-width));
 }
 
-.validation-error {
-  margin-top: 1rem;
-  color: red;
-  font-size: 1.2rem;
-}
-
-.loading-container {
-  position: fixed;
-  z-index: 99;
-  overflow-y: auto;
-  background: var(--body);
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  left: 0px;
-}
-
-.loading-wrapper {
+// App classes
+#app {
+  flex-grow: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
+  flex-direction: column;
 }
 
-.loading-content {
-  transform: translateY(-10rem);
-  display: flex;
-  overflow: hidden;
+.app-wrapper {
+  width: 100%;
+  flex: 1 0 auto;
 }
 </style>

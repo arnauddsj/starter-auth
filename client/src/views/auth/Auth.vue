@@ -2,9 +2,6 @@
   <div class="auth-container">
     <Logo class="logo" />
     <router-view class="auth-wrapper"></router-view>
-    <div class="error-container" v-if="stateError.error">
-      {{ stateError.message }}
-    </div>
   </div>
 </template>
 
@@ -12,9 +9,7 @@
 /*
   Layout that shows all pages related to login, registration, validation etc.
 */
-import Logo from '../../components/Logo.vue'
-import { storeError } from '../../store/errorHandler'
-const { stateError } = storeError()
+import Logo from '../../components/layout/Logo.vue'
 </script>
 
 <style lang="scss" scoped>

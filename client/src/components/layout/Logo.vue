@@ -9,6 +9,7 @@
 <style lang="scss" scoped>
 .logo {
   font-weight: 900;
+  width: 15rem;
   .router-link-exact-active {
     border-bottom: none;
   }

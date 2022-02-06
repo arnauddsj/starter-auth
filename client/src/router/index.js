@@ -3,17 +3,10 @@ import { isAuth, setUser, authCheck, storeUser } from '../store/user'
 
 const { stateUser } = storeUser()
 
-import { storeError, resetError } from '../store/errorHandler'
+import { resetAllValidationErrors } from '../store/validations'
 
-import {
-  hasValidationError,
-  resetAllValidationErrors,
-} from '../store/validations'
-const { stateError } = storeError()
-
-import main from '../views/Main.vue'
 import home from '../views/Home.vue'
-import account from '../views/user/Account.vue'
+import userProfile from '../views/member/Profile.vue'
 import pageNotFound from '../views/404.vue'
 
 import auth from '../views/auth/Auth.vue'
@@ -31,28 +24,22 @@ import accountRevoked from '../views/auth/AccountRevoked.vue'
 const routes = [
   {
     path: '/',
-    component: main,
-    name: 'main',
-    children: [
-      {
-        path: '',
-        component: home,
-        name: 'home',
-      },
-      {
-        path: '/account/',
-        component: account,
-        name: 'account',
-        meta: {
-          requiresAuth: true,
-        },
-      },
-    ],
+    component: home,
+    name: 'home',
+  },
+  {
+    path: '/member/profile',
+    component: userProfile,
+    name: 'user-profile',
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: '/auth',
     component: auth,
     name: 'auth',
+    meta: { hideNavigation: true },
     children: [
       {
         // Root of parent route
@@ -121,10 +108,8 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   // Reset Errors on navigation
-  if (stateError.error || hasValidationError.value) {
-    resetError()
-    resetAllValidationErrors()
-  }
+
+  resetAllValidationErrors()
 
   // 1. Check if route need auth, if not next()
   if (to.matched.some((record) => record.meta.requiresAuth)) {

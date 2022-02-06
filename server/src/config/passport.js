@@ -45,6 +45,14 @@ const verifyCallback = async (req, email, password, done) => {
     .then((user) => {
       if (!user) done(null, false)
 
+      // Check if user register with social but tried to login with local
+      if (!user.hash || !user.salt) {
+        let error = new Error(
+          'Please sign in with social or create a password for your account with the Forgot password link.'
+        )
+        error.statusCode = 401
+        throw error
+      }
       const isValid = verifyPassword(password, user.hash, user.salt)
 
       if (!isValid) done(null, false)

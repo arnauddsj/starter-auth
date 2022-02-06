@@ -9,35 +9,14 @@
     <Divider />
 
     <!-- LOCAL STRATEGIES -->
-    <form @submit.prevent="submit">
-      <label for="email">Email</label>
-      <input
-        type="email"
-        name="email"
-        v-model="inputs.email"
-        @blur="validate('email', inputs)"
-        @focus="resetValidationError('email')"
-      />
-      <div v-if="stateValidation.email" class="validation-error">
-        {{ stateValidation.email }}
-      </div>
-      <label for="password">Password</label>
-      <input
-        type="password"
-        name="password"
-        v-model="inputs.password"
-        @blur="validate('password', inputs)"
-        @focus="resetValidationError('password')"
-      />
-      <div v-if="stateValidation.password" class="validation-error">
-        {{ stateValidation.password }}
-      </div>
-
+    <form @submit.prevent="submitForm">
+      <EmailInput v-model="inputs.email" />
+      <PasswordInput v-model="inputs.password" />
       <router-link :to="{ name: 'password-reset' }" class="forgot-password"
         >Forgot password?</router-link
       >
 
-      <button type="submit">Sign In</button>
+      <button type="submit" :disabled="isSubmitValid">Sign In</button>
     </form>
     <p>
       No account?
@@ -47,7 +26,7 @@
 </template>
 
 <script setup>
-import { reactive, watchEffect } from 'vue'
+import { reactive, watchEffect, inject } from 'vue'
 import { useLogin, isAuth } from '../../store/user'
 import { useRouter } from 'vue-router'
 import SignInGoogle from '../../components/auth/SignInGoogle.vue'
@@ -57,24 +36,28 @@ import SignInGithub from '../../components/auth/SignInGithub.vue'
 import SignInLinkedin from '../../components/auth/SignInLinkedin.vue'
 import Divider from '../../components/auth/Divider.vue'
 
+import EmailInput from '../../components/forms/EmailInput.vue'
+import PasswordInput from '../../components/forms/PasswordInput.vue'
+
 import {
-  validate,
-  validateAll,
   storeValidation,
-  resetValidationError,
+  validateForm,
+  isSubmitValid,
 } from '../../store/validations'
-const { stateValidation } = storeValidation()
+const { validationErrors } = storeValidation()
 
 const router = useRouter()
+const toast = inject(['moshaToast'])
 
 const inputs = reactive({
   email: '',
   password: '',
 })
 
-const submit = async () => {
+const submitForm = async () => {
   try {
-    await validateAll(inputs)
+    validateForm(inputs)
+    // const validation = await validateAll(inputs)
     const credentials = {
       email: inputs.email,
       password: inputs.password,
@@ -83,18 +66,34 @@ const submit = async () => {
     const res = await useLogin(credentials)
     if (res.status === 200) {
       router.push({
-        name: 'account',
+        name: 'home',
       })
     }
   } catch (error) {
-    console.log(error)
+    const errorMessage = error.response.data
+    let timeOut = 3000
+
+    if (
+      errorMessage ===
+      'Please sign in with social or create a password for your account with the Forgot password link.'
+    ) {
+      timeOut = 6000
+    }
+
+    toast(error.response.data, {
+      position: 'bottom-right',
+      transition: 'bounce',
+      showIcon: 'true',
+      type: 'danger',
+      timeout: timeOut,
+    })
   }
 }
 
 watchEffect(() => {
   // If user is logged-in force redirection to account
   if (isAuth.value) {
-    router.push({ name: 'account' })
+    router.push({ name: 'home' })
   }
 })
 </script>

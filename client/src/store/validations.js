@@ -1,10 +1,6 @@
 import { readonly, reactive, computed } from 'vue'
-import { setError } from '../store/errorHandler'
-import * as yup from 'yup'
-import YupPassword from 'yup-password'
-YupPassword(yup) // extend yup
 
-const stateValidation = reactive({
+const validationErrors = reactive({
   errors: [],
   email: '',
   password: '',
@@ -13,112 +9,73 @@ const stateValidation = reactive({
 
 function storeValidation() {
   return {
-    stateValidation: readonly(stateValidation),
+    validationErrors: readonly(validationErrors),
   }
 }
 
-// Validation
-const schema = yup.object().shape({
-  email: yup.string().email().required('Please enter a valid email'),
-  password: yup
-    .string()
-    .required('Password is required')
-    .min(8, 'Password must contain at least 8 characters')
-    .minSymbols(1, 'Password must contain at least 1 symbol')
-    .minUppercase(1, 'Password must contain at least 1 uppercase')
-    .minNumbers(1, 'Password must contain at least 1 number'),
-  passwordConfirmation: yup
-    .string()
-    .oneOf([yup.ref('password'), null], 'Passwords must match'),
-})
-
-// MUTATIONS
-
-const SET_VALIDATION_ERROR = (error) => {
-  stateValidation[error.path] = error.message
+// Reusable validators
+const isEmpty = (fieldName, fieldValue) => {
+  return !fieldValue ? 'The ' + fieldName + ' field is required' : ''
 }
 
-const RESET_VALIDATION_ERROR = (input) => {
-  stateValidation[input] = ''
+const minLength = (fieldName, fieldValue, minLength) => {
+  return fieldValue.length < minLength
+    ? `The ${fieldName} field must be at least ${minLength} characters long`
+    : ''
 }
 
-const RESET_ALL_VALIDATION_ERRORS = () => {
-  stateValidation.email = ''
-  stateValidation.password = ''
-  stateValidation.passwordConfirmation = ''
+const isEmail = (fieldValue) => {
+  let re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return !re.test(fieldValue) ? 'This is not a valid email address' : ''
 }
 
-// ACTIONS
+// Actions
+const validateEmail = (fieldValue) => {
+  validationErrors['email'] = !fieldValue
+    ? isEmpty('email', fieldValue)
+    : isEmail(fieldValue)
+}
 
-const resetValidationError = (input) => {
-  RESET_VALIDATION_ERROR(input)
+const validatePassword = (fieldValue) => {
+  validationErrors['password'] = !fieldValue
+    ? isEmpty('password', fieldValue)
+    : minLength('password', fieldValue, 8)
+}
+
+// TO CHECK IF USEFULE
+const resetValidationError = (fieldName) => {
+  validationErrors[fieldName] = ''
 }
 
 const resetAllValidationErrors = () => {
-  RESET_ALL_VALIDATION_ERRORS()
+  validationErrors.errors = []
 }
 
-const validate = async (input, value) => {
-  try {
-    await schema.validateAt(input, value)
-  } catch (error) {
-    SET_VALIDATION_ERROR(error)
-  }
+const validateForm = (inputs) => {
+  console.log(inputs)
 }
 
-/*
-    {
-        errors: ["email is a required field"],
-        inner: [],
-        message: "email is a required field",
-        name: "ValidationError",
-        params: {path: "email", value: "", originalValue: "", label: undefined},
-        path: "email",
-        type: "required",
-        value: "",
-        // ..
+// Getter
+const isSubmitValid = computed((inputs, errors) => {
+  // checks if any of its properties are empty or if any of the same properties in the errors object have error messages.
+  let disabled = true
+  for (let prop in inputs) {
+    if (!inputs[prop] || errors[prop]) {
+      disabled = true
+      break
     }
-    */
-
-/*
-method will be called when the user clicks on the submit button. 
-Here, you need to validate both the fields using the validate() method. 
-By default the validate() method will reject the promise as soon as it finds 
-the error and wont validate any further fields. 
-So to avoid that you need to pass the abortEarly option and set the boolean 
-to false { abortEarly: false }.
-*/
-
-const validateAll = async (inputs) => {
-  try {
-    await schema.validate(inputs, { abortEarly: true })
-    RESET_ALL_VALIDATION_ERRORS()
-  } catch (error) {
-    console.log('Form validation error: ', { error })
-    if (error.errors.length > 0) {
-      setError(error.message)
-    } else {
-      setError('Please fix form issues and submit again')
-    }
-    throw error
+    disabled = false
   }
-}
-
-const hasValidationError = computed(() => {
-  let isEmpty = (o) =>
-    o.constructor.name === 'Object'
-      ? Object.keys(o).reduce((y, z) => y && isEmpty(o[z]), true)
-      : o.length == 0
-
-  const o = { ...stateValidation }
-  return !isEmpty(o)
+  return disabled
 })
 
 export {
-  storeValidation,
-  validate,
-  validateAll,
   resetValidationError,
   resetAllValidationErrors,
-  hasValidationError,
+  storeValidation,
+  validateEmail,
+  validatePassword,
+  isSubmitValid,
+  validateForm,
 }
