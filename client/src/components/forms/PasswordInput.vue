@@ -7,8 +7,8 @@
         name="password"
         placeholder="Password"
         v-model="input"
-        @keyup="validateInput"
-        @blur="validateInput"
+        @keyup="validatePassword(input)"
+        @blur="validatePassword(input)"
         @input="$emit('update:modelValue', $event.target.value)"
       />
     </div>
@@ -24,9 +24,5 @@ import { validatePassword, storeValidation } from '../../store/validations'
 const { validationErrors } = storeValidation()
 
 const input = ref('')
-
-const validateInput = () => {
-  validatePassword('password', input.value)
-}
 </script>
 <style lang="scss" scoped></style>
