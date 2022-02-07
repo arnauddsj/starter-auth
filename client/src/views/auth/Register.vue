@@ -9,13 +9,7 @@
     <Divider>or register</Divider>
     <form @submit.prevent="submit">
       <label for="email">Email</label>
-      <input
-        type="email"
-        name="email"
-        v-model="inputs.email"
-        @blur="validate('email', inputs)"
-        @focus="resetValidationError('email')"
-      />
+      <input type="email" name="email" v-model="inputs.email" />
       <div v-if="stateValidation.email" class="validation-error">
         {{ stateValidation.email }}
       </div>
@@ -23,13 +17,7 @@
         >Password
         <button @click.prevent="tips = !tips" class="tips">?</button></label
       >
-      <input
-        type="password"
-        name="password"
-        v-model="inputs.password"
-        @blur="validate('password', inputs)"
-        @focus="resetValidationError('password')"
-      />
+      <input type="password" name="password" v-model="inputs.password" />
       <div v-if="stateValidation.password" class="validation-error">
         {{ stateValidation.password }}
       </div>
@@ -64,7 +52,7 @@ import SignInGithub from '../../components/auth/SignInGithub.vue'
 import SignInLinkedin from '../../components/auth/SignInLinkedin.vue'
 import Divider from '../../components/auth/Divider.vue'
 
-import { storeValidation, resetValidationError } from '../../store/validations'
+import { storeValidation } from '../../store/validations'
 const { stateValidation } = storeValidation()
 
 const router = useRouter()

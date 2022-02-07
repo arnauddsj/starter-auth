@@ -1,7 +1,6 @@
 import { readonly, reactive, computed } from 'vue'
 
 const validationErrors = reactive({
-  errors: [],
   email: '',
   password: '',
   passwordConfirmation: '',
@@ -14,68 +13,68 @@ function storeValidation() {
 }
 
 // Reusable validators
-const isEmpty = (fieldName, fieldValue) => {
-  return !fieldValue ? 'The ' + fieldName + ' field is required' : ''
+const isEmpty = (fieldName) => {
+  validationErrors[fieldName] = 'The ' + fieldName + ' is required'
 }
 
-const minLength = (fieldName, fieldValue, minLength) => {
-  return fieldValue.length < minLength
-    ? `The ${fieldName} field must be at least ${minLength} characters long`
-    : ''
+const minLength = (fieldValue, minLength) => {
+  if (fieldValue.length < minLength) return false
+  return true
 }
 
 const isEmail = (fieldValue) => {
-  let re =
+  let emailRegex =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-  return !re.test(fieldValue) ? 'This is not a valid email address' : ''
+
+  if (!emailRegex.test(fieldValue)) return false
+  return true
 }
 
 // Actions
 const validateEmail = (fieldValue) => {
-  validationErrors['email'] = !fieldValue
-    ? isEmpty('email', fieldValue)
-    : isEmail(fieldValue)
+  if (fieldValue === '') {
+    validationErrors.email = 'The email is required'
+  } else if (!isEmail(fieldValue)) {
+    validationErrors.email = 'This is not a valid email address'
+  } else {
+    validationErrors.email = ''
+  }
 }
 
 const validatePassword = (fieldValue) => {
-  validationErrors['password'] = !fieldValue
-    ? isEmpty('password', fieldValue)
-    : minLength('password', fieldValue, 8)
-}
-
-// TO CHECK IF USEFULE
-const resetValidationError = (fieldName) => {
-  validationErrors[fieldName] = ''
+  if (fieldValue === '') {
+    validationErrors.password = 'The password is required'
+  } else if (!minLength(fieldValue, 8)) {
+    validationErrors.password =
+      'The password field must be at least 8 characters long'
+  } else {
+    validationErrors.password = ''
+  }
 }
 
 const resetAllValidationErrors = () => {
-  validationErrors.errors = []
-}
-
-const validateForm = (inputs) => {
-  console.log(inputs)
+  validationErrors.email = ''
+  validationErrors.password = ''
+  validationErrors.passwordConfirmation = ''
 }
 
 // Getter
-const isSubmitValid = computed((inputs, errors) => {
-  // checks if any of its properties are empty or if any of the same properties in the errors object have error messages.
-  let disabled = true
-  for (let prop in inputs) {
-    if (!inputs[prop] || errors[prop]) {
-      disabled = true
+const formHasError = computed(() => {
+  let hasError = false
+  for (let field in validationErrors) {
+    if (validationErrors[field] !== '') {
+      return true
       break
     }
-    disabled = false
+    hasError = false
   }
-  return disabled
+  return hasError
 })
 
 export {
-  resetValidationError,
-  resetAllValidationErrors,
   storeValidation,
   validateEmail,
   validatePassword,
-  isSubmitValid,
-  validateForm,
+  formHasError,
+  resetAllValidationErrors,
 }

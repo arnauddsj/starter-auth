@@ -44,6 +44,7 @@ onBeforeMount(async () => {
 :root {
   --accent-color: rgb(41, 166, 216);
   --text-on-accent-color: white;
+  --text-error: rgba(255, 0, 85, 0.733);
   --body-txt-color: #2e3d3d;
   --body-bg: #f9fdfd;
 
@@ -129,6 +130,58 @@ h3 {
 
 .container-size {
   width: min(var(--min-desktop-width), var(--max-desktop-width));
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  label {
+    font-size: 1.4rem;
+
+    &:not(:first-child) {
+      margin-top: 1.5rem;
+    }
+  }
+
+  input {
+    height: 2.5rem;
+    padding: 1.7rem 0.8rem;
+    margin-top: 0.6rem;
+    font-size: 1.6rem;
+  }
+
+  button {
+    padding: 1.2rem 1rem;
+    font-weight: 800;
+    color: var(--text-on-accent-color);
+    background-color: var(--accent-color);
+
+    &:hover {
+      background-color: rgb(12, 117, 158);
+    }
+
+    &:active {
+      background-color: #616161;
+    }
+  }
+}
+
+// Inputs general class
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.input__error {
+  font-size: 1.4rem;
+  margin-top: 0.5em;
+  color: var(--text-error);
+}
+
+.label__error {
+  color: var(--text-error);
 }
 
 // App classes

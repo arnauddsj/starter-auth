@@ -12,7 +12,7 @@
 .divider {
   display: flex;
   align-items: center;
-  margin: 4rem 0;
+  margin-block: 3rem;
 }
 
 .divider__left {
@@ -25,7 +25,7 @@
 }
 
 .divider__text {
-  padding: 0 2rem;
+  padding-inline: 2rem;
 }
 
 hr {

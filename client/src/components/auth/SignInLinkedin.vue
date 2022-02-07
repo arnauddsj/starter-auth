@@ -1,5 +1,5 @@
 <template>
-  <div class="login__container">
+  <div>
     <button @click="signIn" class="login__btn">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -21,11 +21,8 @@ const signIn = () => {
 }
 </script>
 <style lang="scss" scoped>
-.login__container {
-  width: 100%;
-}
-
 .login__btn {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
@@ -35,6 +32,17 @@ const signIn = () => {
   font-weight: 800;
   border: 2px solid #0077b5;
   color: #0077b5;
+
+  span {
+    margin-left: 2em;
+  }
+
+  svg {
+    position: absolute;
+    left: 1.5em;
+    height: 19px;
+    fill: #0077b5;
+  }
 
   &:hover {
     color: white;
@@ -48,11 +56,6 @@ const signIn = () => {
   &:active {
     color: white;
     background-color: #0077b5;
-  }
-
-  svg {
-    fill: #0077b5;
-    height: 19px;
   }
 }
 </style>

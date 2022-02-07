@@ -3,13 +3,7 @@
     <h2>Recover Password</h2>
     <form @submit.prevent="submit">
       <label for="password">Password</label>
-      <input
-        type="password"
-        name="password"
-        v-model="inputs.password"
-        @blur="validate('password', inputs)"
-        @focus="resetValidationError('password')"
-      />
+      <input type="password" name="password" v-model="inputs.password" />
       <div v-if="stateValidation.password" class="validation-error">
         {{ stateValidation.password }}
       </div>
@@ -18,8 +12,6 @@
         type="password"
         name="passwordConfirmation"
         v-model="inputs.passwordConfirmation"
-        @blur="validate('passwordConfirmation', inputs)"
-        @focus="resetValidationError('passwordConfirmation')"
       />
       <div v-if="stateValidation.passwordConfirmation" class="validation-error">
         {{ stateValidation.passwordConfirmation }}
@@ -40,7 +32,7 @@
 */
 import { reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { storeValidation, resetValidationError } from '../../store/validations'
+import { storeValidation } from '../../store/validations'
 const { stateValidation } = storeValidation()
 import api from '../../services/apiClient'
 

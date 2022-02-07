@@ -1,7 +1,7 @@
 <template>
-  <div class="auth-container">
+  <div class="auth-container flex-col-center">
     <Logo class="logo" />
-    <router-view class="auth-wrapper"></router-view>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -14,17 +14,10 @@ import Logo from '../../components/layout/Logo.vue'
 
 <style lang="scss" scoped>
 .auth-container {
-  padding-top: 6rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  margin-top: 3rem;
+  min-width: min-content;
+  max-width: 28rem;
 }
-
-.auth-wrapper {
-  width: 30rem;
-}
-
 .logo {
   margin-bottom: 5rem;
 }

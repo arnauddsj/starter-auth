@@ -3,13 +3,7 @@
     <h2>Recover Password</h2>
     <form @submit.prevent="submit">
       <label for="email">Email</label>
-      <input
-        name="email"
-        v-model="inputs.email"
-        type="email"
-        @blur="validate('email', inputs)"
-        @focus="resetValidationError('email')"
-      />
+      <input name="email" v-model="inputs.email" type="email" />
       <div v-if="stateValidation.email" class="validation-error">
         {{ stateValidation.email }}
       </div>
@@ -27,7 +21,7 @@
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { storeValidation, resetValidationError } from '../../store/validations'
+import { storeValidation } from '../../store/validations'
 const { stateValidation } = storeValidation()
 import api from '../../services/apiClient'
 

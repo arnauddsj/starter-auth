@@ -1,5 +1,5 @@
 <template>
-  <div class="login__container">
+  <div>
     <!-- SOCIAL STRATEGIES -->
     <SignInGoogle class="social-login" />
     <SignInFacebook class="social-login" />
@@ -12,16 +12,21 @@
     <form @submit.prevent="submitForm">
       <EmailInput v-model="inputs.email" />
       <PasswordInput v-model="inputs.password" />
-      <router-link :to="{ name: 'password-reset' }" class="forgot-password"
-        >Forgot password?</router-link
-      >
 
-      <button type="submit" :disabled="isSubmitValid">Sign In</button>
+      <button type="submit">Sign In</button>
     </form>
-    <p>
-      No account?
-      <router-link :to="{ name: 'register' }">Please Register.</router-link>
-    </p>
+    <div class="flex-col-center form__bottom">
+      <p>
+        <router-link :to="{ name: 'password-reset' }" class="forgot-password"
+          >Forgot password?</router-link
+        >
+      </p>
+
+      <p>
+        No account?
+        <router-link :to="{ name: 'register' }">Please Register.</router-link>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -39,10 +44,13 @@ import Divider from '../../components/auth/Divider.vue'
 import EmailInput from '../../components/forms/EmailInput.vue'
 import PasswordInput from '../../components/forms/PasswordInput.vue'
 
+import { setLoading, resetLoading } from '../../store/loadingHandler'
+
 import {
   storeValidation,
-  validateForm,
-  isSubmitValid,
+  formHasError,
+  validateEmail,
+  validatePassword,
 } from '../../store/validations'
 const { validationErrors } = storeValidation()
 
@@ -56,31 +64,45 @@ const inputs = reactive({
 
 const submitForm = async () => {
   try {
-    validateForm(inputs)
+    validateEmail(inputs.email)
+    validatePassword(inputs.password)
+
+    if (formHasError.value) {
+      let error = new Error('Please fill the form correctly before submit')
+      throw error
+    }
+
     // const validation = await validateAll(inputs)
     const credentials = {
       email: inputs.email,
       password: inputs.password,
     }
-
+    setLoading()
     const res = await useLogin(credentials)
     if (res.status === 200) {
       router.push({
-        name: 'home',
+        name: 'user-profile',
       })
     }
+    resetLoading()
   } catch (error) {
-    const errorMessage = error.response.data
+    let errorMessage
     let timeOut = 3000
 
-    if (
-      errorMessage ===
-      'Please sign in with social or create a password for your account with the Forgot password link.'
-    ) {
-      timeOut = 6000
+    if (error.response?.data) {
+      errorMessage = error.response.data
+
+      if (
+        errorMessage ===
+        'Please sign in with social or create a password for your account with the Forgot password link.'
+      ) {
+        timeOut = 6000
+      }
+    } else {
+      errorMessage = error.message
     }
 
-    toast(error.response.data, {
+    toast(errorMessage, {
       position: 'bottom-right',
       transition: 'bounce',
       showIcon: 'true',
@@ -99,59 +121,16 @@ watchEffect(() => {
 </script>
 
 <style lang="scss" scoped>
-h2 {
-  font-size: 1.7rem;
-  margin-bottom: 4rem;
-  text-align: center;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-
-  label {
-    font-size: 1.3rem;
-
-    &:not(:first-child) {
-      margin-top: 1.5rem;
-    }
-  }
-
-  input {
-    height: 2.5rem;
-    padding: 1.5rem 0.8rem;
-    margin-top: 0.6rem;
-  }
-
-  button {
-    margin-top: 2rem;
-    padding: 1.2rem 1rem;
-    font-weight: 800;
-    color: var(--text-on-accent-color);
-    background-color: var(--accent-color);
-
-    &:hover {
-      background-color: rgb(12, 117, 158);
-    }
-
-    &:active {
-      background-color: #616161;
-    }
-  }
-}
-
-p {
+.form__bottom {
   margin-top: 1rem;
-  font-size: 1.3rem;
-  text-align: center;
-}
+  font-size: 1.4rem;
 
-.forgot-password {
-  margin-top: 0.6rem;
-  font-size: 1.2rem;
+  p {
+    margin-top: 0.5rem;
+  }
 }
 
 .social-login:not(:first-child) {
-  margin-top: 1rem;
+  margin-top: 1.2rem;
 }
 </style>
