@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="input-wrapper">
-      <label for="password">Password</label>
+      <label for="password"><slot>Password</slot></label>
       <input
         type="password"
         name="password"
-        placeholder="Password"
+        placeholder="My supper strong password"
         v-model="input"
         @keyup="validatePassword(input)"
         @blur="validatePassword(input)"

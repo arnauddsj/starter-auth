@@ -14,11 +14,12 @@ import Logo from '../../components/layout/Logo.vue'
 
 <style lang="scss" scoped>
 .auth-container {
+  display: inline-block;
+  width: 30rem;
+  max-width: 30rem;
   margin-top: 3rem;
-  min-width: min-content;
-  max-width: 28rem;
 }
 .logo {
-  margin-bottom: 5rem;
+  margin: 0 auto 5rem auto;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="text-center">
     <h2>You are registered</h2>
-    <div>Please validate your email</div>
+    <h4 class="margin-bottom-2">Please check your emails for validation</h4>
     <p>
       No email? Check your spam or
       <button @click="validateEmail" :disabled="sendEmailDisabled">

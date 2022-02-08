@@ -34,28 +34,26 @@
 import { reactive, watchEffect, inject } from 'vue'
 import { useLogin, isAuth } from '../../store/user'
 import { useRouter } from 'vue-router'
-import SignInGoogle from '../../components/auth/SignInGoogle.vue'
-import SignInFacebook from '../../components/auth/SignInFacebook.vue'
-import SignInTwitter from '../../components/auth/SignInTwitter.vue'
-import SignInGithub from '../../components/auth/SignInGithub.vue'
-import SignInLinkedin from '../../components/auth/SignInLinkedin.vue'
-import Divider from '../../components/auth/Divider.vue'
-
-import EmailInput from '../../components/forms/EmailInput.vue'
-import PasswordInput from '../../components/forms/PasswordInput.vue'
-
 import { setLoading, resetLoading } from '../../store/loadingHandler'
-
 import {
   storeValidation,
   formHasError,
   validateEmail,
   validatePassword,
 } from '../../store/validations'
-const { validationErrors } = storeValidation()
 
-const router = useRouter()
+import SignInGoogle from '../../components/auth/SignInGoogle.vue'
+import SignInFacebook from '../../components/auth/SignInFacebook.vue'
+import SignInTwitter from '../../components/auth/SignInTwitter.vue'
+import SignInGithub from '../../components/auth/SignInGithub.vue'
+import SignInLinkedin from '../../components/auth/SignInLinkedin.vue'
+import Divider from '../../components/auth/Divider.vue'
+import EmailInput from '../../components/forms/EmailInput.vue'
+import PasswordInput from '../../components/forms/PasswordInput.vue'
+
 const toast = inject(['moshaToast'])
+const { validationErrors } = storeValidation()
+const router = useRouter()
 
 const inputs = reactive({
   email: '',

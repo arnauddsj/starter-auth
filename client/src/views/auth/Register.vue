@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div>
     <!-- SOCIAL STRATEGIES -->
     <SignInGoogle class="social-login" />
     <SignInFacebook class="social-login" />
@@ -7,32 +7,24 @@
     <SignInGithub class="social-login" />
     <SignInLinkedin class="social-login" />
     <Divider>or register</Divider>
-    <form @submit.prevent="submit">
-      <label for="email">Email</label>
-      <input type="email" name="email" v-model="inputs.email" />
-      <div v-if="stateValidation.email" class="validation-error">
-        {{ stateValidation.email }}
-      </div>
-      <label for="password"
+    <form @submit.prevent="submitForm">
+      <EmailInput v-model="inputs.email" />
+      <PasswordInput v-model="inputs.password"
         >Password
-        <button @click.prevent="tips = !tips" class="tips">?</button></label
+        <button @click.prevent="tips = !tips" class="tips">
+          ?
+        </button></PasswordInput
       >
-      <input type="password" name="password" v-model="inputs.password" />
-      <div v-if="stateValidation.password" class="validation-error">
-        {{ stateValidation.password }}
-      </div>
-      <div v-show="tips" class="password-rules">
-        Min 8 characters with at least:<br />
-        1 symbol, uppercase and number.
-      </div>
-      <button type="submit" class="submit">Register</button>
+
+      <div v-show="tips" class="password-rules">Min 8 characters</div>
+      <button type="submit">Register</button>
     </form>
-    <ul>
-      <li>
+    <div class="flex-col-center form__bottom">
+      <p>
         Already have an account?
-        <router-link :to="{ name: 'login' }">Please login.</router-link>
-      </li>
-    </ul>
+        <router-link :to="{ name: 'login' }">Please Login.</router-link>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -42,20 +34,30 @@
   From there user check mail or resend a validation email (this will un-valid the previous one)
   The user email is stored to store/user, it can be used on to resend email.
   */
-import { reactive, ref, watchEffect } from 'vue'
+import { reactive, ref, watchEffect, inject } from 'vue'
 import { register, isAuth } from '../../store/user'
 import { useRouter } from 'vue-router'
+import { setLoading, resetLoading } from '../../store/loadingHandler'
+import {
+  storeValidation,
+  formHasError,
+  validateEmail,
+  validatePassword,
+} from '../../store/validations'
+
 import SignInGoogle from '../../components/auth/SignInGoogle.vue'
 import SignInFacebook from '../../components/auth/SignInFacebook.vue'
 import SignInTwitter from '../../components/auth/SignInTwitter.vue'
 import SignInGithub from '../../components/auth/SignInGithub.vue'
 import SignInLinkedin from '../../components/auth/SignInLinkedin.vue'
 import Divider from '../../components/auth/Divider.vue'
+import EmailInput from '../../components/forms/EmailInput.vue'
+import PasswordInput from '../../components/forms/PasswordInput.vue'
 
-import { storeValidation } from '../../store/validations'
-const { stateValidation } = storeValidation()
+const { validationErrors } = storeValidation()
 
 const router = useRouter()
+const toast = inject(['moshaToast'])
 
 const tips = ref(false)
 
@@ -64,21 +66,44 @@ const inputs = reactive({
   password: '',
 })
 
-const submit = async () => {
+const submitForm = async () => {
   try {
-    await validateAll(inputs)
+    validateEmail(inputs.email)
+    validatePassword(inputs.password)
+
+    if (formHasError.value) {
+      let error = new Error('Please fill the form correctly before submit')
+      throw error
+    }
+
     const credentials = {
       email: inputs.email,
       password: inputs.password,
     }
+    setLoading()
     const res = await register(credentials)
     if (res?.status === 200) {
       router.push({
         name: 'registration-success',
       })
     }
+    resetLoading()
   } catch (error) {
-    console.log(error)
+    let errorMessage
+
+    if (error.response?.data) {
+      errorMessage = error.response.data
+    } else {
+      errorMessage = error.message
+    }
+
+    toast(errorMessage, {
+      position: 'bottom-right',
+      transition: 'bounce',
+      showIcon: 'true',
+      type: 'danger',
+      timeout: 3000,
+    })
   }
 }
 
@@ -91,64 +116,22 @@ watchEffect(() => {
 </script>
 
 <style lang="scss" scoped>
-h2 {
-  font-size: 1.7rem;
-  margin-bottom: 4rem;
-  text-align: center;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-
-  label {
-    font-size: 1.3rem;
-
-    &:not(:first-child) {
-      margin-top: 1.5rem;
-    }
-  }
-
-  input {
-    height: 2.5rem;
-    padding: 1.5rem 0.8rem;
-    margin-top: 0.6rem;
-  }
-
-  .submit {
-    margin-top: 2rem;
-    padding: 1.2rem 1rem;
-    font-weight: 800;
-    color: var(--text-on-accent-color);
-    background-color: var(--accent-color);
-
-    &:hover {
-      background-color: rgb(12, 117, 158);
-    }
-
-    &:active {
-      background-color: #616161;
-    }
-  }
-}
-
-ul {
+.form__bottom {
   margin-top: 1rem;
+  font-size: 1.4rem;
+
+  p {
+    margin-top: 0.5rem;
+  }
+}
+
+.tips {
+  background-color: var(--accent-color);
+  border-radius: 50px;
+  padding: 0.3rem 0.7rem;
   font-size: 1.3rem;
-  text-align: center;
-
-  li {
-    margin-top: 0.6rem;
-  }
 }
-
-.password-rules {
-  margin-top: 1rem;
-  color: rgb(110, 110, 110);
-  font-size: 1.2rem;
-}
-
 .social-login:not(:first-child) {
-  margin-top: 1rem;
+  margin-top: 1.2rem;
 }
 </style>

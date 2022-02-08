@@ -116,16 +116,22 @@ h3 {
   text-align: center;
 }
 
+.margin-bottom-2 {
+  margin-bottom: 2rem;
+}
+
 .flex-col-center {
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex: 0 0 auto;
 }
 
 .flex-row-center {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex: 0 0 auto;
 }
 
 .container-size {
@@ -135,6 +141,7 @@ h3 {
 form {
   display: flex;
   flex-direction: column;
+  flex: 0 0 auto;
   gap: 1.5rem;
 
   label {
@@ -150,6 +157,11 @@ form {
     padding: 1.7rem 0.8rem;
     margin-top: 0.6rem;
     font-size: 1.6rem;
+
+    &::placeholder {
+      color: #7e7e7e;
+      font-size: 1.4rem;
+    }
   }
 
   button {
@@ -172,6 +184,7 @@ form {
 .input-wrapper {
   display: flex;
   flex-direction: column;
+  flex: 0 0 auto;
 }
 
 .input__error {
@@ -184,7 +197,7 @@ form {
   color: var(--text-error);
 }
 
-// App classes
+// App classes, helps to stick footer in bottom
 #app {
   flex-grow: 1;
   display: flex;
@@ -192,7 +205,6 @@ form {
 }
 
 .app-wrapper {
-  width: 100%;
   flex: 1 0 auto;
 }
 </style>
