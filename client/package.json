@@ -15,9 +15,7 @@
     "mosha-vue-toastify": "^1.0.23",
     "sass": "^1.45.0",
     "vue": "^3.2.23",
-    "vue-router": "^4.0.12",
-    "yup": "^0.32.11",
-    "yup-password": "^0.2.2"
+    "vue-router": "^4.0.12"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.10.2",
