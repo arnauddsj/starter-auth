@@ -109,7 +109,7 @@ h1,
 h2,
 h3 {
   font-weight: 900;
-  line-height: 1; // Let picture shrink but not get oversized.
+  line-height: 1.2; // Let picture shrink but not get oversized.
 }
 
 .text-center {
@@ -118,6 +118,9 @@ h3 {
 
 .margin-bottom-2 {
   margin-bottom: 2rem;
+}
+.margin-bottom-4 {
+  margin-bottom: 4rem;
 }
 
 .flex-col-center {
@@ -193,8 +196,9 @@ form {
   color: var(--text-error);
 }
 
-.label__error {
-  color: var(--text-error);
+.text-action {
+  color: var(--accent-color);
+  font-weight: 600;
 }
 
 // App classes, helps to stick footer in bottom

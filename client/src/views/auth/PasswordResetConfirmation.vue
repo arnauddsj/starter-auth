@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <h2>Recover Password</h2>
+  <div class="text-center">
+    <h3 class="margin-bottom-2">Recovery Link Sent</h3>
     <div>
-      If account exists, an email will be sent with further instructions
+      If account exists, an email will be sent with further instructions.
     </div>
     <p>
       <router-link :to="{ name: 'home' }">Back to website home.</router-link>

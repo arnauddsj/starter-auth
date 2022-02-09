@@ -10,7 +10,6 @@
         @keyup="validateEmail(input)"
         @blur="validateEmail(input)"
         @input="$emit('update:modelValue', $event.target.value)"
-        :class="{ label__error: validationErrors.email }"
       />
     </div>
     <div class="input__error" v-if="validationErrors.email">

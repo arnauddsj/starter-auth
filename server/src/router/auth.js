@@ -460,9 +460,9 @@ If needed use this route to check if user is still auth to navigate to required 
 */
 
 router.get('/auth/auth-check', (req, res, next) => {
-  //Created a separate route without middleware to not throw errors on app load
-  if (!req.isAuthenticated() && req.user?.activation !== 'VALIDATED') {
-    res.send()
+  //Auth check is a server side route guard to not throw errors on app load if user not logged in and visit public pages
+  if (!req.isAuthenticated()) {
+    res.status(200).send()
   } else {
     // Add here more data you want to receive from server/db
     const user = {

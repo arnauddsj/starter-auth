@@ -2,9 +2,9 @@
   <div class="loading-container">
     <div class="loading-wrapper">
       <div class="loading__content">
-        <div>
+        <!-- <div>
           <img src="/loading.png" alt="loading" class="loading__img" />
-        </div>
+        </div> -->
         <div>
           <h1>LOADING</h1>
         </div>

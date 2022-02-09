@@ -49,6 +49,10 @@ const useLogin = async (credentials) => {
 
   if (res.data.activation === 'REVOKED') {
     return res
+  } else if (res.data.activation === 'PENDING') {
+    SET_USER_DATA(res.data)
+    SET_USER_AUTH()
+    return res
   }
 
   SET_USER_DATA(res.data)
@@ -62,8 +66,14 @@ const authCheck = async () => {
 
   // Not logged in or revoked, do not set user data and auth
   if (res.data.activation === 'REVOKED' || res.data === '') {
+    SET_USER_DATA(res.data)
     resetLoading()
-    return
+    return res
+  } else if (res.data.activation === 'PENDING') {
+    SET_USER_DATA(res.data)
+    SET_USER_AUTH()
+    resetLoading()
+    return res
   }
 
   SET_USER_DATA(res.data)

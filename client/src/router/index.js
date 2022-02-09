@@ -108,21 +108,18 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   // Reset Errors on navigation
-
   resetAllValidationErrors()
 
   // 1. Check if route need auth, if not next()
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     // 2. If authRequired, check in store if user isAuth
     if (!isAuth.value) {
-      // 3. If not Auth, check if there is a cookie and validate it
+      // 3. If not Auth, check if there is a cookie and validate it, used on page load
       try {
         const res = await authCheck()
         // 5. If cookie is validated, store user data in store
-
         if (res.data.activation === 'PENDING') {
-          // 6. is user email is not validate redirect to validation request page
-          setUser(res.data.email)
+          // 6. If user email is not validated redirect to validation request page
           next({ name: 'account-need-validation' })
         } else if (res.data.activation === 'REVOKED') {
           next({ name: 'account-revoked' })
@@ -136,6 +133,7 @@ router.beforeEach(async (to, from, next) => {
         next({ name: 'login' })
         return
       }
+      // Is logged in, double check activation, this is more likely to be a navigation
     } else if (stateUser.activation === 'PENDING') {
       next({ name: 'account-need-validation' })
     } else if (stateUser.activation === 'REVOKED') {

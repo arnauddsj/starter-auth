@@ -39,7 +39,6 @@ import { register, isAuth } from '../../store/user'
 import { useRouter } from 'vue-router'
 import { setLoading, resetLoading } from '../../store/loadingHandler'
 import {
-  storeValidation,
   formHasError,
   validateEmail,
   validatePassword,
@@ -53,8 +52,6 @@ import SignInLinkedin from '../../components/auth/SignInLinkedin.vue'
 import Divider from '../../components/auth/Divider.vue'
 import EmailInput from '../../components/forms/EmailInput.vue'
 import PasswordInput from '../../components/forms/PasswordInput.vue'
-
-const { validationErrors } = storeValidation()
 
 const router = useRouter()
 const toast = inject(['moshaToast'])
@@ -80,6 +77,7 @@ const submitForm = async () => {
       email: inputs.email,
       password: inputs.password,
     }
+
     setLoading()
     const res = await register(credentials)
     if (res?.status === 200) {
@@ -104,6 +102,8 @@ const submitForm = async () => {
       type: 'danger',
       timeout: 3000,
     })
+
+    resetLoading()
   }
 }
 

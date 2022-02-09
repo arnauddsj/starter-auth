@@ -1,10 +1,15 @@
 <template>
-  <div class="text-center">
-    <h2>You are registered</h2>
+  <div>
+    <h3 class="text-center margin-bottom-2">You are registered</h3>
     <h4 class="margin-bottom-2">Please check your emails for validation</h4>
-    <p>
-      No email? Check your spam or
-      <button @click="validateEmail" :disabled="sendEmailDisabled">
+    <p class="text-center margin-bottom-2 ">
+      <div class="text-center" > No email?</div> 
+      <div class="text-center ">Check your spam or</div>
+       <button
+      :class="{ 'text-action': !sendEmailDisabled }"
+      @click="genEmailValidation"
+      :disabled="sendEmailDisabled"
+    >
         re-send a validation email.
       </button>
     </p>
@@ -26,7 +31,7 @@ const enableButton = () => {
   }, 20000)
 }
 
-const validateEmail = () => {
+const genEmailValidation = () => {
   api.genEmailValidation(stateUser.email)
   sendEmailDisabled.value = true
   enableButton()

@@ -75,6 +75,7 @@ const submitForm = async () => {
       email: inputs.email,
       password: inputs.password,
     }
+
     setLoading()
     const res = await useLogin(credentials)
     if (res.status === 200) {
@@ -107,6 +108,8 @@ const submitForm = async () => {
       type: 'danger',
       timeout: timeOut,
     })
+
+    resetLoading()
   }
 }
 

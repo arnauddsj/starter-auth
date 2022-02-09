@@ -30,6 +30,11 @@ const isEmail = (fieldValue) => {
   return true
 }
 
+const passwordIdentical = (password, passwordConfirmation) => {
+  if (password !== passwordConfirmation) return false
+  return true
+}
+
 // Actions
 const validateEmail = (fieldValue) => {
   if (fieldValue === '') {
@@ -49,6 +54,14 @@ const validatePassword = (fieldValue) => {
       'The password field must be at least 8 characters long'
   } else {
     validationErrors.password = ''
+  }
+}
+
+const validatePasswordMatch = (password, passwordConfirmation) => {
+  if (!passwordIdentical(password, passwordConfirmation)) {
+    validationErrors.passwordConfirmation = "The passwords don't match"
+  } else {
+    validationErrors.passwordConfirmation = ''
   }
 }
 
@@ -75,6 +88,7 @@ export {
   storeValidation,
   validateEmail,
   validatePassword,
+  validatePasswordMatch,
   formHasError,
   resetAllValidationErrors,
 }
