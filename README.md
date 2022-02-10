@@ -42,6 +42,22 @@ JWT_EMAIL_SECRET="strong secret 2"
 
 SEND_GRID_USER_VALIDATION_API_KEY="SG.xxxxxxxxxxx"
 EMAIL_FROM="no-reply@yourdomain.com"
+
+GOOGLE_API_ID="xxxxx"
+GOOGLE_API_SECRET="xxxxx"
+
+FACEBOOK_API_ID="xxxxx"
+FACEBOOK_API_SECRET="xxxxx"
+
+TWITTER_API_ID="xxxxx"
+TWITTER_API_SECRET="xxxxx"
+
+GITHUB_API_ID="xxxxx"
+GITHUB_API_SECRET="xxxxx"
+
+LINKEDIN_API_ID="xxxxx"
+LINKEDIN_API_SECRET="xxxxx"
+
 ```
 
 The CLIENT_URL is used for cors and must match the url of your development server.
