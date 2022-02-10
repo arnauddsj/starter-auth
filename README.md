@@ -1,6 +1,7 @@
 # Starter Auth 
 
-This starter pack help me to quickly bootstrap any SaaS project with an already made auth architecture, made with the following stack express, prisma, passport, vue3.  
+This starter pack help me to quickly bootstrap any SaaS project with an already made auth architecture, made with the following stack:  
+Express.js, Prisma, Passport, Vue3.  
 It is divided in 2 folders, server for the api, and client for the front-end.
 
 ## Server 
