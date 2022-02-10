@@ -20,9 +20,14 @@ Run in production:
 npm run start
 ```
 
-#### Authentication strategies
+#### Authentication strategies available
 
-For now, only the local strategy has been developed. I plan to add login with google, twitter and github strategies very soon.
+- Local : user create account with email and password.
+- Google
+- Twitter
+- Linkedin
+- Github
+- Facebook (not tested)
 
 ### Server installation 
 
