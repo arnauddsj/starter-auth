@@ -74,7 +74,8 @@ Api url is the link to your express api.
 
 ## Next steps
 
-A lot need to be improved and fine tuned. CSS is quite ugly, but this actual version is already a good step to start a project without having to spend a week on authentication.
+Thi actual version is already a good step to start a project without having to spend a week on authentication.  
+! Facebook auth has not yet been tested
 
 Future improvements:  
 1 [x] Add Yup validations on the server side as well (important). -> Done as a middleware  
@@ -83,8 +84,6 @@ Future improvements:
 4 [ ] Add a simple admin interface for managing users (there is already an admin check logic but not used yet).  
 5 [ ] Add simple user profile to let user changes their infos.  
 6 [ ] Add simple stripe logic for subscriptions.  
-
-And maybe make it look a bit better on the way.
 
 ## Contributing
 Pull requests are welcome, mostly if you find critical security issues. For major changes, please open an issue first to discuss what you would like to change.
