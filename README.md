@@ -8,7 +8,7 @@ It is divided in 2 folders, server for the api, and client for the front-end.
 
 Server use expressjs, passportjs for the authentication part, and prisma as CRM to communicate with database. I personally use postgres but you can use anything that works with prisma.  
 Sendgrid is used for the email delivery but it should be easy enough to use an other service if you want to.
-
+Yup is used for form validations.
 
 Run in development:
 ```bash
@@ -71,7 +71,6 @@ The CLIENT_URL is used for cors and must match the url of your development serve
 ## Client
 
 For the front-end I use the combo Vitejs + Vuejs 3.  
-Yup is used for form validations.
 
 #### User authentication
 Users register and need to validate their email. They cannot access to any requiredAuth route if not validated.
