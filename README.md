@@ -68,6 +68,12 @@ LINKEDIN_API_SECRET="xxxxx"
 
 The CLIENT_URL is used for cors and must match the url of your development server.
 
+Once your postgres database is ready and the DATABASE_URL is filled with the right information, run.
+
+```bash
+npx prisma migrate dev
+```
+
 ## Client
 
 Run:
