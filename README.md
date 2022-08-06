@@ -41,7 +41,7 @@ Make sure you create a .env at the folder root server/.env with the following in
 ```bash
 PORT=4000
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
-CLIENT_URL="http://localhost:3000"
+CLIENT_URL="http://localhost:5173"
 
 SESSION_SECRET="strong secret 1"
 JWT_EMAIL_SECRET="strong secret 2"
@@ -69,6 +69,11 @@ LINKEDIN_API_SECRET="xxxxx"
 The CLIENT_URL is used for cors and must match the url of your development server.
 
 ## Client
+
+Run:
+```bash
+npm run dev
+```  
 
 For the front-end I use the combo Vitejs + Vuejs 3.  
 
