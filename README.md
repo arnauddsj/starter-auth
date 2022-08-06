@@ -10,16 +10,6 @@ Server use expressjs, passportjs for the authentication part, and prisma as CRM 
 Sendgrid is used for the email delivery but it should be easy enough to use an other service if you want to.
 Yup is used for form validations.
 
-Run in development:
-```bash
-npm run dev
-```  
-
-Run in production:
-```bash
-npm run start
-```
-
 #### Authentication strategies available
 
 - Local : user create account with email and password.
@@ -68,18 +58,25 @@ LINKEDIN_API_SECRET="xxxxx"
 
 The CLIENT_URL is used for cors and must match the url of your development server.
 
-Once your postgres database is ready and the DATABASE_URL is filled with the right information, run.
+Once your postgres database is ready and the DATABASE_URL is filled with the right information, run the following command to create table on the database.
 
 ```bash
 npx prisma migrate dev
 ```
 
-## Client
+Then to run in development:
 
-Run:
 ```bash
 npm run dev
 ```  
+
+Run in production:
+```bash
+npm run start
+```
+
+
+## Client
 
 For the front-end I use the combo Vitejs + Vuejs 3.  
 
@@ -102,6 +99,12 @@ VITE_API_URL="http://localhost:4000/api/v1"
 ```
 
 Api url is the link to your express api.
+
+To run vite:
+
+```bash
+npm run dev
+```  
 
 
 ## Next steps
