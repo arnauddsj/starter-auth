@@ -1,9 +1,9 @@
 {
   "name": "client",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Quick Start Auth Client",
   "engines": {
-    "node": ">=15.0.0 <=16.13.2"
+    "node": ">=15.0.0"
   },
   "scripts": {
     "dev": "vite",
@@ -11,19 +11,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "axios": "^0.24.0",
-    "mosha-vue-toastify": "^1.0.23",
-    "sass": "^1.45.0",
-    "vue": "^3.2.23",
-    "vue-router": "^4.0.12"
+    "axios": "0.27.2",
+    "mosha-vue-toastify": "1.0.23",
+    "sass": "1.54.3",
+    "vue": "3.2.37",
+    "vue-router": "4.1.3"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^1.10.2",
-    "@vue/eslint-config-airbnb": "^6.0.0",
-    "eslint": "^8.4.1",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-vue": "^8.2.0",
-    "prettier": "^2.5.1",
-    "vite": "^2.7.0"
+    "@vitejs/plugin-vue": "3.0.1",
+    "@vue/eslint-config-airbnb": "6.0.0",
+    "eslint": "8.21.0",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-vue": "9.3.0",
+    "prettier": "2.7.1",
+    "vite": "3.0.4"
   }
 }
