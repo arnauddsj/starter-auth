@@ -10,13 +10,22 @@ function storeLoading() {
   }
 }
 
-// ACTIONS
-const setLoading = () => {
+// MUTATIONS
+const SET_LOADING = () => {
   stateLoading.loading = true
 }
 
-const resetLoading = () => {
+const RESET_LOADING = () => {
   stateLoading.loading = false
+}
+
+// ACTIONS
+const setLoading = () => {
+  SET_LOADING()
+}
+
+const resetLoading = () => {
+  RESET_LOADING()
 }
 
 export { storeLoading, setLoading, resetLoading }

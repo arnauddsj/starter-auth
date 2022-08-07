@@ -392,7 +392,7 @@ router.get(
 router.get(
   '/auth/google/callback',
   passport.authenticate('google', {
-    successRedirect: `${process.env.CLIENT_URL}/member/profile`,
+    successRedirect: `${process.env.CLIENT_URL}/account`,
     failureUrl: `${process.env.CLIENT_URL}/auth`,
     failureMessage: true,
   })
@@ -404,7 +404,7 @@ router.get('/auth/facebook', passport.authenticate('facebook'))
 router.get(
   '/auth/facebook/callback',
   passport.authenticate('facebook', {
-    successRedirect: `${process.env.CLIENT_URL}/member/profile`,
+    successRedirect: `${process.env.CLIENT_URL}/account`,
     failureUrl: `${process.env.CLIENT_URL}/auth`,
     failureMessage: true,
   })
@@ -416,7 +416,7 @@ router.get('/auth/twitter', passport.authenticate('twitter'))
 router.get(
   '/auth/twitter/callback',
   passport.authenticate('twitter', {
-    successRedirect: `${process.env.CLIENT_URL}/member/profile`,
+    successRedirect: `${process.env.CLIENT_URL}/account`,
     failureUrl: `${process.env.CLIENT_URL}/auth`,
     failureMessage: true,
   })
@@ -428,7 +428,7 @@ router.get('/auth/github', passport.authenticate('github'))
 router.get(
   '/auth/github/callback',
   passport.authenticate('github', {
-    successRedirect: `${process.env.CLIENT_URL}/member/profile`,
+    successRedirect: `${process.env.CLIENT_URL}/account`,
     failureUrl: `${process.env.CLIENT_URL}/auth`,
     failureMessage: true,
   })
@@ -440,7 +440,7 @@ router.get('/auth/linkedin', passport.authenticate('linkedin'))
 router.get(
   '/auth/linkedin/callback',
   passport.authenticate('linkedin', {
-    successRedirect: `${process.env.CLIENT_URL}/member/profile`,
+    successRedirect: `${process.env.CLIENT_URL}/account`,
     failureUrl: `${process.env.CLIENT_URL}/auth`,
     failureMessage: true,
   })
@@ -450,15 +450,10 @@ router.get(
 router.get('/auth/logout', (req, res, next) => {
   // logout with passport
   req.logout()
-  // Change to callback when migrate to v0.6.x
-  // req.logout(function(err) {
-  //   if (err) { return next(err) }
-  // })
-  
   req.session.destroy()
   res.send()
-
 })
+
 /* 
 On navigation auth check
 If needed use this route to check if user is still auth to navigate to required auth routes.

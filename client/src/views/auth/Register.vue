@@ -110,7 +110,7 @@ const submitForm = async () => {
 watchEffect(() => {
   // If user is logged-in force redirection to account
   if (isAuth.value) {
-    router.push({ name: 'user-profile' })
+    router.push({ name: 'account' })
   }
 })
 </script>

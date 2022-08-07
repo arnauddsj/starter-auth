@@ -15,18 +15,32 @@ function storeUser() {
   }
 }
 
-const setUser = (data) => {
+// MUTATIONS
+const SET_USER_DATA = (data) => {
   stateUser.email = data.email
   stateUser.activation = data.activation
   stateUser.userType = data.userType
 }
 
+const SET_USER_AUTH = () => {
+  stateUser.isAuth = true
+}
+
+const RESET_USER = () => {
+  stateUser.isAuth = false
+  stateUser.email = ''
+  stateUser.activation = ''
+  stateUser.userType = ''
+}
+
+// used when register to keep email in stored if need resend validation email
+const SET_EMAIL = (email) => {
+  stateUser.email = email
+}
+// ACTIONS
 const register = async (credentials) => {
   const res = await api.register(credentials)
-
-  // used when register to keep email in store if need to resend validation email
-  stateUser.email = credentials.email
-
+  SET_EMAIL(credentials.email)
   return res
 }
 
@@ -36,13 +50,13 @@ const useLogin = async (credentials) => {
   if (res.data.activation === 'REVOKED') {
     return res
   } else if (res.data.activation === 'PENDING') {
-    setUser(res.data)
-    stateUser.isAuth = true
+    SET_USER_DATA(res.data)
+    SET_USER_AUTH()
     return res
   }
 
-  setUser(res.data)
-  stateUser.isAuth = true
+  SET_USER_DATA(res.data)
+  SET_USER_AUTH()
   return res
 }
 
@@ -52,18 +66,18 @@ const authCheck = async () => {
 
   // Not logged in or revoked, do not set user data and auth
   if (res.data.activation === 'REVOKED' || res.data === '') {
-    setUser(res.data)
+    SET_USER_DATA(res.data)
     resetLoading()
     return res
   } else if (res.data.activation === 'PENDING') {
-    setUser(res.data)
-    stateUser.isAuth = true
+    SET_USER_DATA(res.data)
+    SET_USER_AUTH()
     resetLoading()
     return res
   }
 
-  setUser(res.data)
-  stateUser.isAuth = true
+  SET_USER_DATA(res.data)
+  SET_USER_AUTH()
   resetLoading()
   return res
 }
@@ -71,15 +85,13 @@ const authCheck = async () => {
 const useLogout = async () => {
   setLoading()
   await api.logout()
-
-  stateUser.isAuth = false
-  stateUser.email = ''
-  stateUser.activation = ''
-  stateUser.userType = ''
-
+  RESET_USER()
   resetLoading()
 }
 
+const setUser = (data) => {
+  SET_USER_DATA(data)
+}
 
 // GETTERS
 const isAuth = computed(() => {
