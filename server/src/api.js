@@ -16,7 +16,9 @@ const authRouter = require('./router/auth.js')
 
 const app = express()
 
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 4001
+const listeningUrl =
+  process.env.NODE_ENV === 'production' ? 'localhost' : '127.0.0.1'
 
 // Application middleware
 app.use(helmet())
@@ -55,10 +57,13 @@ deserializeUser function assigns req._passport.session.user to user field of req
 app.use(
   session({
     cookie: {
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // must be 'none' to enable cross-site delivery
+      secure: process.env.NODE_ENV === 'production', // Prod is supposed to use https
       maxAge: 7 * 24 * 60 * 60 * 1000, // ms
     },
     secret: process.env.SESSION_SECRET,
-    resave: false,
+    resave: true,
     saveUninitialized: false,
     store: new PrismaSessionStore(prisma, {
       checkPeriod: 2 * 60 * 1000, //ms
@@ -68,8 +73,8 @@ app.use(
   })
 )
 
+app.set('trust proxy', 1)
 app.use(passport.initialize())
-// app.use(passport.session())
 app.use(passport.authenticate('session'))
 
 // For development purpose:
@@ -102,6 +107,8 @@ app.use(function (error, req, res, next) {
   res.status(error.statusCode).send(error.message) // All HTTP requests must have a response, so let's send back an error with its status code and message
 })
 
-app.listen(port, () => {
-  console.log('Server is up on ' + port)
+app.listen(port, listeningUrl, () => {
+  console.log(
+    `Server is up on ${listeningUrl}:${port} in ${process.env.NODE_ENV}`
+  )
 })

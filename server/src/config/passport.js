@@ -1,6 +1,5 @@
+const prisma = require('../config/prisma')
 const passport = require('passport')
-const { PrismaClient } = require('@prisma/client')
-const prisma = new PrismaClient()
 
 const LocalStrategy = require('passport-local').Strategy
 const GoogleStrategy = require('passport-google-oauth20').Strategy
@@ -10,7 +9,6 @@ const TwitterStrategy = require('passport-twitter').Strategy
 const GithubStrategy = require('passport-github2').Strategy
 
 const verifyPassword = require('../lib/passwordUtils').verifyPassword
-const { serializeUser } = require('passport')
 
 // change default passport expected variable name to email
 const customFields = {
@@ -164,7 +162,6 @@ passport.use(
       profileFields: ['id', 'picture.type(large)', 'email'],
     }, // facebook will send back the token and profile
     async (token, refreshToken, profile, done) => {
-      console.log(profile)
       if (profile) {
         const userData = {
           facebook: {
@@ -216,7 +213,6 @@ passport.use(
       scope: ['user:email'],
     },
     async function (token, tokenSecret, profile, done) {
-      console.log(profile)
       const userData = {
         github: {
           email: profile.emails[0].value,
@@ -240,7 +236,6 @@ passport.use(
       scope: ['r_emailaddress', 'r_liteprofile'],
     },
     async function (token, tokenSecret, profile, done) {
-      console.log(profile)
       const userData = {
         linkedin: {
           email: profile.emails[0].value,
@@ -258,10 +253,8 @@ passport.use(
 passport.serializeUser((user, done) => {
   /* 
   Persist user data (after successful authentication) into session. 
-  use,id is saved to session : req.session.passport.user = {id: '..'}
+  user.id is saved to session : req.session.passport.user = {id: '..'}
   */
-
-  console.log('2 serializeUser', user)
   done(null, user.id)
 })
 

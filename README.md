@@ -41,7 +41,7 @@ Make sure you create a .env at the folder root server/.env with the following in
 ```bash
 PORT=4000
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
-CLIENT_URL="http://localhost:3000"
+CLIENT_URL="http://127.0.0.1:5173"
 
 SESSION_SECRET="strong secret 1"
 JWT_EMAIL_SECRET="strong secret 2"
@@ -87,16 +87,18 @@ npm install
 Make sure you create a .env a the folder root client/.env with the following information:
 
 ```bash
-VITE_API_URL="http://localhost:4000/api/v1"
+VITE_API_URL="http://127.0.0.1:4001/api/v1"
 ```
 
 Api url is the link to your express api.
+The url of server and client must be the same (no localhost + 127.0.0.1) otherwise SameSite policy will block cookie
 
 
 ## Next steps
 
 Thi actual version is already a good step to start a project without having to spend a week on authentication.  
 ! Facebook auth has not yet been tested
+! Twitter auth present a vulnerability from a dependency that is yet to be fixed by maintainer. 
 
 Future improvements:  
 1 [x] Add Yup validations on the server side as well (important). -> Done as a middleware  

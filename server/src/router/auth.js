@@ -25,13 +25,13 @@ const {
 // Register new user
 router.post('/auth/register', validateCredentials, async (req, res, next) => {
   // Those need to match with the customFields setup in config/passport.js
-  const { email, password } = req.body
-  const saltHash = await genPassword(password)
-
-  const salt = saltHash.salt
-  const hash = saltHash.hash
-
   try {
+    const { email, password } = req.body
+    const saltHash = await genPassword(password)
+
+    const salt = saltHash.salt
+    const hash = saltHash.hash
+
     const emailVerificationLink = crypto.randomBytes(32).toString('hex')
 
     const user = await prisma.user.create({
@@ -61,14 +61,24 @@ router.post('/auth/register', validateCredentials, async (req, res, next) => {
     res.send()
   } catch (error) {
     // prisma error type
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error instanceof prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
-        let error = new Error('Email already in use')
-        error.statusCode = 401
-        next(error)
+        console.log('2')
+        let newError = new Error('Email already in use')
+        newError.statusCode = 401
+        next(newError)
       }
+    } else if (error instanceof prisma.PrismaClientUnknownRequestError) {
+      console.log('2')
+      let newError = new Error('Prisma unknown error')
+      newError.statusCode = 401
+      next(newError)
+    } else {
+      console.log('1')
+      let newError = new Error('Unknown error')
+      newError.statusCode = 401
+      next(newError)
     }
-    next(error)
   }
 })
 
@@ -392,7 +402,7 @@ router.get(
 router.get(
   '/auth/google/callback',
   passport.authenticate('google', {
-    successRedirect: `${process.env.CLIENT_URL}/account`,
+    successRedirect: `${process.env.CLIENT_URL}/member/profile`,
     failureUrl: `${process.env.CLIENT_URL}/auth`,
     failureMessage: true,
   })
@@ -404,7 +414,7 @@ router.get('/auth/facebook', passport.authenticate('facebook'))
 router.get(
   '/auth/facebook/callback',
   passport.authenticate('facebook', {
-    successRedirect: `${process.env.CLIENT_URL}/account`,
+    successRedirect: `${process.env.CLIENT_URL}/member/profile`,
     failureUrl: `${process.env.CLIENT_URL}/auth`,
     failureMessage: true,
   })
@@ -416,7 +426,7 @@ router.get('/auth/twitter', passport.authenticate('twitter'))
 router.get(
   '/auth/twitter/callback',
   passport.authenticate('twitter', {
-    successRedirect: `${process.env.CLIENT_URL}/account`,
+    successRedirect: `${process.env.CLIENT_URL}/member/profile`,
     failureUrl: `${process.env.CLIENT_URL}/auth`,
     failureMessage: true,
   })
@@ -428,7 +438,7 @@ router.get('/auth/github', passport.authenticate('github'))
 router.get(
   '/auth/github/callback',
   passport.authenticate('github', {
-    successRedirect: `${process.env.CLIENT_URL}/account`,
+    successRedirect: `${process.env.CLIENT_URL}/member/profile`,
     failureUrl: `${process.env.CLIENT_URL}/auth`,
     failureMessage: true,
   })
@@ -440,7 +450,7 @@ router.get('/auth/linkedin', passport.authenticate('linkedin'))
 router.get(
   '/auth/linkedin/callback',
   passport.authenticate('linkedin', {
-    successRedirect: `${process.env.CLIENT_URL}/account`,
+    successRedirect: `${process.env.CLIENT_URL}/member/profile`,
     failureUrl: `${process.env.CLIENT_URL}/auth`,
     failureMessage: true,
   })
