@@ -1,6 +1,7 @@
 const express = require('express')
 const router = new express.Router()
 const prisma = require('../config/prisma')
+const { Prisma } = require('@prisma/client')
 
 const crypto = require('crypto')
 const passport = require('passport')
@@ -61,14 +62,14 @@ router.post('/auth/register', validateCredentials, async (req, res, next) => {
     res.send()
   } catch (error) {
     // prisma error type
-    if (error instanceof prisma.PrismaClientKnownRequestError) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
         console.log('2')
         let newError = new Error('Email already in use')
         newError.statusCode = 401
         next(newError)
       }
-    } else if (error instanceof prisma.PrismaClientUnknownRequestError) {
+    } else if (error instanceof Prisma.PrismaClientUnknownRequestError) {
       console.log('2')
       let newError = new Error('Prisma unknown error')
       newError.statusCode = 401
