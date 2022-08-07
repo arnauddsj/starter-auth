@@ -3,7 +3,7 @@
   "version": "1.1.0",
   "description": "Quick Start Auth Client",
   "engines": {
-    "node": ">=15.0.0 <=16.13.2"
+    "node": ">=15.0.0"
   },
   "scripts": {
     "dev": "vite",

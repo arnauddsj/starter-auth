@@ -7,9 +7,6 @@
     "dev": "cross-env NODE_ENV=development nodemon src/api.js",
     "start": "node src/api.js"
   },
-  "prisma": {
-    "seed": "node prisma/seed.js"
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -24,15 +21,7 @@
     "express-session": "^1.17.2",
     "helmet": "^4.6.0",
     "jsonwebtoken": "^8.5.1",
-<<<<<<< HEAD
-<<<<<<< HEAD
     "passport": "^0.5.3",
-=======
-    "passport": "^0.5.0",
->>>>>>> parent of cfc012a (Update dependencies)
-=======
-    "passport": "^0.5.0",
->>>>>>> parent of cfc012a (Update dependencies)
     "passport-facebook": "^3.0.0",
     "passport-github2": "^0.1.12",
     "passport-google-oauth20": "^2.0.0",
