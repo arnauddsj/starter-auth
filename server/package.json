@@ -25,7 +25,11 @@
     "helmet": "^4.6.0",
     "jsonwebtoken": "^8.5.1",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "passport": "^0.5.3",
+=======
+    "passport": "^0.5.0",
+>>>>>>> parent of cfc012a (Update dependencies)
 =======
     "passport": "^0.5.0",
 >>>>>>> parent of cfc012a (Update dependencies)
